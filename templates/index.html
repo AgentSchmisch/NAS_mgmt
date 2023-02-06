@@ -3,7 +3,7 @@
 <head>
    <link rel="stylesheet" href="/static/styles.css">
    <title>NAS-Management</title>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <meta http-equiv="Content-Type" content="text/html"; charset="utf-8">
 </head>
 
    <body>
@@ -39,9 +39,15 @@
          </div>
          <div class="pc">
             <h1 class="header">Server Steuerung</h1>
-            <button class="buttonSrvControl">Test1</button>
-            <button class="buttonSrvControl">Test2</button>
-            <button class="buttonSrvControl">Test3</button>
+            <form action="/api/v1/shutdown" method="post">
+                <input type="submit" class="buttonSrvControl" value="Herunterfahren">
+            </form>
+            <form action="/api/v1/reboot" method="post">
+                <input type="submit" class="buttonSrvControl" value="Neustarten">
+            </form>
+            <form action="/api/v1/hibernate" method="post">
+                <input type="submit" class="buttonSrvControl" value="Ruhezustand">
+            </form>
          </div>
       </div>
    </body>

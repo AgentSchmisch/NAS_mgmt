@@ -21,7 +21,6 @@ font-size: 1.3em;
   overflow: hidden;
   height: 20em;
   padding: 1em;
-  box-shadow: 2px 2px;
 }
 
 .wrapper{
@@ -63,6 +62,14 @@ color: green;
 
 .buttonDrvControl{
    height: 2em;
+}
+
+.status{
+  background-color: rgba(0, 126, 167, 0.7);
+  border-style: solid;
+  border-width: 2px;
+  float: center;
+  width: 49%;
 }
 
 
