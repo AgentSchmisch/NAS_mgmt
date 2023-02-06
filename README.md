@@ -4,7 +4,7 @@ The aim of this Project is to create a simple, yet powerful User-Interface/Dashb
 
 ## Setup
 
-- it is important to start the software as root so 
+- It is important to start the software as root so all the PC's commands can be executed without prompting for a password
 
 
 ## Website auto Updater
