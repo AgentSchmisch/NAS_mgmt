@@ -32,5 +32,4 @@ In this section there will be some controls for your server, like restarting
 
 ## Contributors
 
-
 <img src = "https://contrib.rocks/image?repo=AgentSchmisch/NAS_mgmt"/>

@@ -1,9 +1,26 @@
 from flask import Flask, render_template, request
 import os,string
+import requests
 import functions
+import login
+import hashlib
 app=Flask(__name__)
 
 @app.route("/")
+def login():
+    #TODO: Client Side Hashing
+    username=request.form.get("username")
+    password=request.form.get("password")
+
+    db_username,db_password=login.validate_credentials(username)
+
+    if username==db_username and password==db_password:
+        return render_template("login.html",stautus="success"),requests.get("/main")
+    else:
+        return render_template("login.html",status="Login Fehlgeschlagen")
+
+
+@app.route("/main")
 def main():
     # get disk spaces of all the drive and render it to the template
     # get the status of the disks and render it to the template
