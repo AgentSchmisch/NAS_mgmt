@@ -49,6 +49,13 @@ def newCommit():
 
     return "1"
 
+@app.route("/api/v1/unmount",methods=["POST"])
+def unmountDrive():
+    drive=request.args_get("drive")
+
+    os.system("systemctl unmount "+drive)
+
+
 
 #TODO: exit debug mode before deploy to a server
 if __name__ == "__main__":

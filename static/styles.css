@@ -2,15 +2,13 @@ p{
 font-size: 1.3em;
 }
 
-.drives{
-  background-color: rgba(0, 126, 167, 0.7);
-  border-style: solid;
-  border-width: 2px;
+.drive{
+  background-color: rgba(42,41,83,255);
   float: left;
-  width: 49%;
-  height: 20em;
-  margin-right: 1em;
-  box-shadow: 2px 2px;
+  width: 45%;
+  height: 10em;
+  margin-left: 0.5em;
+  margin-bottom: 0.5em;
   padding: 1em;
 }
 
@@ -25,8 +23,14 @@ font-size: 1.3em;
 
 .wrapper{
 width: 100%;
-background-color: rgba(34,34,34,0.5);
+background-color: rgba(23,18,59,255);
 overflow: hidden;
+}
+
+.drive-wrapper{
+color: white;
+width: 50%;
+overflow:hidden;
 }
 
 .pc{
@@ -66,10 +70,23 @@ color: green;
 
 .status{
   background-color: rgba(0, 126, 167, 0.7);
-  border-style: solid;
-  border-width: 2px;
-  float: center;
-  width: 49%;
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  width: 150px;
+  height: 309px;
+  vertical-align: middle;
+  text-align: center;
+  padding: 1em 0 1em 0;
+}
+.status p{
+    position: absolute;
+    color:black;
+    left: 20px;
+    top: 20px;
+    vertical-align: middle;
+    text-align: center;
+    padding: 1em 0 1em 0;
 }
 
 
