@@ -6,16 +6,16 @@
 ---
 
 ## 🧭 Contents
-* [🧭 Contents](#Contents)
-* [🖥️ Setup](#Setup)
-* [📤 Website Auto Updater](#Website Auto Updater)
-* [🔒 Login](#Login)
-* [🧭 Dashboard](#Dashboard)
-  * [⏏️ Hot Swap Drives](#Hot Swap Drives)
-  * [💾 Drive Capacity](#Drive Capacity)
-  * [📈 CPU Usage](#CPU Usage)
-  * [⚙️ Server Control](#Server Control Section)
-* [🔁 DNG Converter](#DNG Converter)
+* [🧭 Contents](#-contents)
+* [🖥️ Setup](#-setup)
+* [📤 Website Auto Updater](#-website-auto-updater)
+* [🔒 Login](#-login)
+* [🧭 Dashboard](#-dashboard)
+  * [⏏️ Hot Swap Drives](#-hot-swap-drives)
+  * [💾 Drive Capacity](#-drive-capacity)
+  * [📈 CPU Usage](#-cpu-usage)
+  * [⚙️ Server Control](#-server-control-section)
+* [🔁 DNG Converter](#-dng-converter)
 ---
 ## 🖥️ Setup
 
