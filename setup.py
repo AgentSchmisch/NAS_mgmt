@@ -5,5 +5,8 @@ setup(
     version="0.1.0",
     author="Florian Schmid",
     packages=["NAS_mgmt"],
-    install_requires=["flask"],
+    install_requires=["flask",
+                      "pydngconverter"
+                      "PIL",
+                      ],
 )
