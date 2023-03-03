@@ -16,6 +16,8 @@
   * [📈 CPU Usage](#-cpu-usage)
   * [⚙️ Server Control](#-server-control-section)
 * [🔁 DNG Converter](#-dng-converter)
+* [✅Requirements](#-requirements)
+* [Contributors](#contributors)
 ---
 ## 🖥️ Setup
 
@@ -72,6 +74,25 @@ This feature will automatically check if there are new files in a certain folder
 - the converter will, by now, only convert `.cr3` images to `.dng`
 - it is mandatory for the feature to work to install [pydngconverter](https://github.com/BradenM/pydngconverter)
 
+## ✅ Requirements
+
+In the Package all the requirements will be included in a file called `requirements.txt`
+<details>
+  <summary>Required Packages</summary>
+
+| Package          |
+|------------------|
+| ✅ Flask          |
+| ✅ pydngconverter |
+| ✅ PIL            |
+| ✅ MariaDB        |
+| ✅ requests       |
+| ✅ os             |
+| ✅ shutil         |
+| ✅ psutil         |
+| ✅ re             |
+| ✅hashlib         |
+</details>
 
 ## Contributors
 
