@@ -39,7 +39,7 @@ def get_CPU_usage():
     for _ in freq1:
         freq.append(freq1[y][0])
     y += 1
-    return usage, freq
+    return usage #, freq
 
 
 def get_capture_date(path, image):

@@ -10,7 +10,7 @@
 * [🖥️ Setup](#-setup)
 * [📤 Website Auto Updater](#-website-auto-updater)
 * [🔒 Login](#-login)
-* [🧭 Dashboard](#-dashboard)
+* [📊 Dashboard](#-dashboard)
   * [⏏️ Hot Swap Drives](#-hot-swap-drives)
   * [💾 Drive Capacity](#-drive-capacity)
   * [📈 CPU Usage](#-cpu-usage)
@@ -40,7 +40,12 @@ The website auto Updater is used to pull a specific repository from a self-hoste
 - push to the "production" branch and your local repository will be automatically updated
 
 ## 🔒 Login
-To access the Dashboard you need to create an account 
+To access the Dashboard you need to create an account in a MariaDB Database, the scheme of the database is currently the following
+
+| username | password    | admin |
+|----------|-------------|-------|
+| str(50)  | sha256 hash | bool  |   
+
 
 ## 📊 Dashboard
 The dashboard is used to control a variety of different functions from the server:

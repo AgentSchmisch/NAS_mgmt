@@ -1,13 +1,14 @@
 import json
-import mysql
+import mysql.connector
 
 
 def init_db_objs(config_obj):
     data = config_obj["mysql"]
     db = mysql.connector.connect(
         host=data['host'],
-        username=data["username"],
+        user=data["username"],
         password=data["password"],
+        database=data["database"],
     )
     exec = db.cursor()
     return exec

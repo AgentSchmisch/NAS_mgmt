@@ -2,7 +2,8 @@
 "mysql": {
   "host":"your_mysql_server_address",
   "username": "your_mysql_username",
-  "password": "your_mysql_password"
+  "password": "your_mysql_password",
+  "database": "your_database_name"
 },
   "folders": {
     "dng_converter": "your_image_folder"
