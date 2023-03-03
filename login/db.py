@@ -1,5 +1,5 @@
 import json
-import mysql.connector
+import mariadb.connector
 
 
 def init_db_objs(config_obj):

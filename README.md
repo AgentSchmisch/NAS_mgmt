@@ -91,7 +91,16 @@ In the Package all the requirements will be included in a file called `requireme
 | ✅ shutil         |
 | ✅ psutil         |
 | ✅ re             |
-| ✅hashlib         |
+| ✅ hashlib        |
+| ✅ asyncio        |             
+
+ It is also necessary to install following packages manually with:
+
+```bash
+sudo apt-get install libmariadb3 libmariadb-dev
+sudo apt-get install gcc python3-dev
+```
+
 </details>
 
 ## Contributors
