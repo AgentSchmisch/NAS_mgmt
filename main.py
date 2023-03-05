@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect,url_for
 import os
 import hashlib
 import requests
@@ -16,14 +16,13 @@ def loginpage():
 
 @app.route("/login", methods=["POST"])
 def login():
+    global allowed
     username = request.form.get("username")
     password = request.form.get("password")
-    test = validate_credentials(username, hashlib.sha256(password.encode()).hexdigest())
-    db_username = "test"
-    db_password = "test2"
-    if username == db_username and password == db_password:
+    is_in_db = validate_credentials(username, hashlib.sha256(password.encode()).hexdigest())
+    if is_in_db:
         allowed = True
-        return render_template("login.html", stautus="success"), requests.get("/main")
+        return redirect(url_for("main"))
     else:
         allowed = False
         return render_template("login.html", status="Login Fehlgeschlagen")
