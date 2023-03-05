@@ -6,11 +6,27 @@
     <title>Login</title>
 </head>
 <body>
-<form action="/login" method="post">
-    <input type="text" value="Benutzername"><br>
-    <input type="password" value="Passwort"><br>
+<form action="/login" method="POST">
+    <input type="text" value="Benutzername" name="username"><br>
+    <input type="password" value="Passwort" name="password"><br>
     <input type="submit" value="Bestätigen">
 </form>
+
+
+<iframe id="cpuload"src="/api/v1/cpuload"></iframe>
+
+
+
 <p>{{status}}</p>
+<script>
+    window.setInterval(function() {
+        reloadIFrame()
+    }, 3000);
+
+    function reloadIFrame() {
+        console.log('reloading..');
+        document.getElementById('cpuload').contentWindow.location.reload();
+    }
+</script>
 </body>
 </html>

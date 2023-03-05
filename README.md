@@ -10,12 +10,14 @@
 * [🖥️ Setup](#-setup)
 * [📤 Website Auto Updater](#-website-auto-updater)
 * [🔒 Login](#-login)
-* [🧭 Dashboard](#-dashboard)
+* [📊 Dashboard](#-dashboard)
   * [⏏️ Hot Swap Drives](#-hot-swap-drives)
   * [💾 Drive Capacity](#-drive-capacity)
   * [📈 CPU Usage](#-cpu-usage)
   * [⚙️ Server Control](#-server-control-section)
 * [🔁 DNG Converter](#-dng-converter)
+* [✅Requirements](#-requirements)
+* [Contributors](#contributors)
 ---
 ## 🖥️ Setup
 
@@ -40,7 +42,12 @@ The website auto Updater is used to pull a specific repository from a self-hoste
 - push to the "production" branch and your local repository will be automatically updated
 
 ## 🔒 Login
-To access the Dashboard you need to create an account 
+To access the Dashboard you need to create an account in a MariaDB Database, the scheme of the database is currently the following
+
+| username | password    | admin |
+|----------|-------------|-------|
+| str(50)  | sha256 hash | bool  |   
+
 
 ## 📊 Dashboard
 The dashboard is used to control a variety of different functions from the server:
@@ -67,6 +74,34 @@ This feature will automatically check if there are new files in a certain folder
 - the converter will, by now, only convert `.cr3` images to `.dng`
 - it is mandatory for the feature to work to install [pydngconverter](https://github.com/BradenM/pydngconverter)
 
+## ✅ Requirements
+
+In the Package all the requirements will be included in a file called `requirements.txt`
+<details>
+  <summary>Required Packages</summary>
+
+| Package          |
+|------------------|
+| ✅ Flask          |
+| ✅ pydngconverter |
+| ✅ PIL            |
+| ✅ MariaDB        |
+| ✅ requests       |
+| ✅ os             |
+| ✅ shutil         |
+| ✅ psutil         |
+| ✅ re             |
+| ✅ hashlib        |
+| ✅ asyncio        |             
+
+ It is also necessary to install following packages manually with:
+
+```bash
+sudo apt-get install libmariadb3 libmariadb-dev
+sudo apt-get install gcc python3-dev
+```
+
+</details>
 
 ## Contributors
 
