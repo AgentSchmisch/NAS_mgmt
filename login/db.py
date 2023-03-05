@@ -4,7 +4,7 @@ import mariadb
 
 def init_db_objs(config_obj):
     data = config_obj["mysql"]
-    db = mysql.connect(
+    db = mariadb.connect(
         host=data['host'],
         user=data["username"],
         password=data["password"],

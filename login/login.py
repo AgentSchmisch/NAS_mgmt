@@ -17,9 +17,9 @@ def validate_credentials(usrname, password):
         database=data["database"],
     )
     cursor = db.cursor()
-    db_password = cursor.execute("select * from users").fetchall()
-    print(db_password)
-    #db_password = exec.execute("select password from users where username = "+usrname+";")
+    cursor.execute("Select * from users")
+    db_password = cursor.fetchall()
+    print(db_password , password)
 
     if db_password == "":
         return False
