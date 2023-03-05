@@ -18,7 +18,7 @@ def loginpage():
 def login():
     username = request.form.get("username")
     password = request.form.get("password")
-    test = validate_credentials(username, hashlib.sha256(password))
+    test = validate_credentials(username, hashlib.sha256(password.encode("utf-8")))
     db_username="test"
     db_password="test2"
     if username == db_username and password == db_password:

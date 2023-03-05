@@ -1,10 +1,10 @@
 import json
-import mariadb.connector
+import mariadb
 
 
 def init_db_objs(config_obj):
     data = config_obj["mysql"]
-    db = mysql.connector.connect(
+    db = mysql.connect(
         host=data['host'],
         user=data["username"],
         password=data["password"],
