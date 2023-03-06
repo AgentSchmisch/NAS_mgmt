@@ -18,10 +18,10 @@ def validate_credentials(username, password):
             database=data["database"],
         )
         cursor = db.cursor()
-        cursor.execute("Select username,password from users where username in ('"+username+"');")
+        cursor.execute("Select username,password from users where username in ('" + username + "');")
         db_result = cursor.fetchall()
         db_username, db_password = db_result[0]
-
+        print(db_username, db_password)
         if db_password == "":
             print("login failed")
             return False

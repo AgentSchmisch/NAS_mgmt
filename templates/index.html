@@ -9,8 +9,8 @@
 <body>
 <div class="wrapper">
     <h1>Dashboard</h1>
-    <div class="">
-        <iframe id="hddstate" src="/api/v1/soragestate"></iframe>
+    <div class="disk">
+        <iframe id="diskspace" src="/api/v1/diskspace"></iframe>
     </div>
 
     <div class="cpu">
@@ -38,6 +38,7 @@
     function reloadIFrame() {
         console.log('reloading..');
         document.getElementById('cpuload').contentWindow.location.reload();
+        document.getElementById('diskspace').contentWindow.location.reload();
     }
 
 </script>

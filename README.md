@@ -1,4 +1,4 @@
-![**Version**: 28-02-2023](https://img.shields.io/badge/version-28--02--2023-blueviolet?style=flat&logo=circle)
+![**Version**: 06-03-2023](https://img.shields.io/badge/version-06--03--2023-blueviolet?style=flat&logo=circle)
 <h1 align="center"> NAS-Mgmt</h1>
 
 ....a simple, yet powerful User-Interface/Dashboard to control a up to 4 Disk, self hosted NAS System.
@@ -23,8 +23,9 @@
 
 - It is important to start the software as root so all the PC's commands can be executed without prompting for a password
 - there will be a packaged version of the repository so setup will be easier
+- start off by installing all the requirements listed in [✅Requirements](#-requirements)
 
-To Start the program use...
+To Start the program afterwards, use...
 
 ```bash
 cd your/project/folder
@@ -41,13 +42,26 @@ The website auto Updater is used to pull a specific repository from a self-hoste
 - In a repository create a webhook routing to your webserver on the address `localhost:5000/api/v1/newCommit` 
 - push to the "production" branch and your local repository will be automatically updated
 
+---
+
 ## 🔒 Login
 To access the Dashboard you need to create an account in a MariaDB Database, the scheme of the database is currently the following
 
-| username | password    | admin |
-|----------|-------------|-------|
-| str(50)  | sha256 hash | bool  |   
+| id           | username     | password     | is_admin |
+|--------------|--------------|--------------|----------|
+| varchar(100) | varchar(100) | varchar(100) | tinyint  |   
 
+<details>
+  <summary>Column Details</summary>
+
+- id (uuid4 string)
+- username (str)
+- password (sha256 hash)
+- is_admin (boolean)
+  
+</details>
+
+---
 
 ## 📊 Dashboard
 The dashboard is used to control a variety of different functions from the server:
@@ -73,6 +87,8 @@ This feature will automatically check if there are new files in a certain folder
 - the capture date of the images are read from the EXIF data of the image, so make sure the date of your camera is set correctly
 - the converter will, by now, only convert `.cr3` images to `.dng`
 - it is mandatory for the feature to work to install [pydngconverter](https://github.com/BradenM/pydngconverter)
+
+---
 
 ## ✅ Requirements
 
@@ -102,6 +118,8 @@ sudo apt-get install gcc python3-dev
 ```
 
 </details>
+
+---
 
 ## Contributors
 

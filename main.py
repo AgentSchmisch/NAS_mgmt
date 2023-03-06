@@ -44,9 +44,13 @@ def main():
         return render_template("login.html", status="nicht angemeldet")
 
 @app.get("/api/v1/cpuload")
-def cpuLoad():
-    cpu_load = functions.get_CPU_usage()
-    return render_template("cpu_status.html", load=cpu_load)
+def cpu_load():
+    Cpu_load = functions.get_CPU_usage()
+    return render_template("cpu_status.html", load=Cpu_load)
+@app.get("/api/v1/diskspace")
+def disk_space():
+    Disk_space = functions.get_disks()
+    return render_template("disk_space.html", space=Disk_space)
 
 
 @app.route("/api/v1/shutdown", methods=["POST"])

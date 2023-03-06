@@ -16,6 +16,7 @@ def get_disks():
     regex = r"/dev/sd"
     all_disk = psutil.disk_partitions()
     physical_disks = []
+    physical_disk_space = []
     y = 0
     for x in all_disk:
         temp = all_disk[y][0]
@@ -23,11 +24,13 @@ def get_disks():
 
         if (match is not None):
             physical_disks.append(all_disk[y][1])  # returns disk mounting point of all disks
-            physical_disks.append(shutil.disk_usage(all_disk[y][1]))  # get space of the connected disk
         else:
             continue
         y += 1
-    return physical_disks
+
+    for disk in physical_disks:
+        physical_disk_space.append(shutil.disk_usage(disk))
+    return physical_disk_space
 
 
 # get cpu usage and frequency per core
