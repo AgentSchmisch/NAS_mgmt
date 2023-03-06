@@ -4,7 +4,6 @@
 ....a simple, yet powerful User-Interface/Dashboard to control a up to 4 Disk, self hosted NAS System.
 
 ---
-
 ## 🧭 Contents
 * [🧭 Contents](#-contents)
 * [🖥️ Setup](#-setup)
@@ -20,13 +19,14 @@
 * [🥅 Planned Features](#-planned-features)
 * [👥 Contributors](#-contributors)
 ---
+
 ## 🖥️ Setup
 
 - It is important to start the software as root so all the PC's commands can be executed without prompting for a password
 - there will be a packaged version of the repository so setup will be easier
-- start off by installing all the requirements listed in [✅Requirements](#-requirements)
+- start off by installing all the requirements listed in [✅ Requirements](#-requirements)
 
-To Start the program afterwards, use...
+To start the program afterwards, use...
 
 ```bash
 cd your/project/folder
@@ -48,9 +48,11 @@ The website auto Updater is used to pull a specific repository from a self-hoste
 ## 🔒 Login
 To access the Dashboard you need to create an account in a MariaDB Database, the scheme of the database is currently the following
 
-| id           | username     | password     | is_admin |
-|--------------|--------------|--------------|----------|
-| varchar(100) | varchar(100) | varchar(100) | tinyint  |   
+table name: `users`
+
+| id           | username     | password     | admin   |
+|--------------|--------------|--------------|---------|
+| varchar(100) | varchar(100) | varchar(100) | tinyint |   
 
 <details>
   <summary>Column Details</summary>
@@ -124,7 +126,7 @@ sudo apt-get install gcc python3-dev
 
 ## 🥅 Planned Features
 
--  ✅ Login form 
+- ✅   Login form 
 - ☑️ implement check if user has admin permissions in the Dabase and show different content then to users that are "just" users
 - ☑️ List of services running on the machine & selection of shown services in a menu
 - ☑️ admin panel to add and remove users

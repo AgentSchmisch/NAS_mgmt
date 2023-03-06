@@ -8,6 +8,7 @@ from login.db import _select, _from, _where as query
 
 
 def validate_credentials(username, password):
+    global is_admin
     try:
         config_obj = load_conf()
         data = config_obj["mysql"]
@@ -18,9 +19,9 @@ def validate_credentials(username, password):
             database=data["database"],
         )
         cursor = db.cursor()
-        cursor.execute("Select username,password from users where username in ('" + username + "');")
+        cursor.execute("Select username, password, admin from users where username in ('" + username + "');")
         db_result = cursor.fetchall()
-        db_username, db_password = db_result[0]
+        db_username, db_password, is_admin = db_result[0]
         print(db_username, db_password)
         if db_password == "":
             print("login failed")

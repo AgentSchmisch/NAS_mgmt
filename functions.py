@@ -60,23 +60,27 @@ async def convert_to_dng(path, image):
 
 
 def sort_new_images():
-    path = ""
+    config_obj = load_conf()
+    pathx = config_obj["folders"]
+    path = pathx["dng_converter"]
     files = os.listdir(path)
-    allowed_image_types = ["jpg", "jpeg", "cr3", "cr2", "DNG", "dng"]
+    allowed_image_types = ["jpg", "jpeg", "cr3", "cr2", "DNG", "dng", "CR3"]
     folders = []
     images_to_convert = []
     images = []
 
     for file in files:
         temp = file.split(".")
-        if temp[len(temp) - 1] != "":
+        print(temp[len(temp) - 1])
+        if temp[len(temp) - 1] == "":
             folders.append(file)
         elif temp[len(temp) - 1] in allowed_image_types:  # append all files to the images list
             images.append(file)
-            if temp[len(temp) - 1] == "cr3":  # if the image is cr3 append it to the to do list for the converter
+            if temp[len(temp) - 1] == "cr3" or temp[len(temp) - 1] == "CR3":  # if the image is cr3 append it to the to do list for the converter
                 images_to_convert.append(file)
-
+    print(images_to_convert)
     for image in images_to_convert:
+        print(image)
         # convert the image from cr3 to dng
         loop = asyncio.get_event_loop()
         loop.run_until_complete(convert_to_dng(path, image))
@@ -92,5 +96,6 @@ def sort_new_images():
         # if the folder doesn't exist...create it
         if date in folders:
             shutil.move(path + image, path + date + image)
+            print("moved to folder")
         else:
             os.mkdir(path + date)

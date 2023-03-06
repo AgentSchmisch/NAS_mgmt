@@ -1,14 +1,17 @@
-from flask import Flask, render_template, request, redirect,url_for
+from threading import Thread
+
+from flask import Flask, render_template, request, redirect, url_for
 import os
 import hashlib
 import requests
 import functions
 import mariadb
+from apscheduler.schedulers.background import BackgroundScheduler
 from login.login import validate_credentials
 
 app = Flask(__name__)
 allowed = False
-
+is_admin = 0
 
 @app.route("/")
 def loginpage():
@@ -41,10 +44,13 @@ def main():
     else:
         return render_template("login.html", status="nicht angemeldet")
 
+
 @app.get("/api/v1/cpuload")
 def cpu_load():
     Cpu_load = functions.get_CPU_usage()
     return render_template("cpu_status.html", load=Cpu_load)
+
+
 @app.get("/api/v1/diskspace")
 def disk_space():
     Disk_space = functions.get_disks()
@@ -53,13 +59,13 @@ def disk_space():
 
 @app.route("/api/v1/shutdown", methods=["POST"])
 def shutdown():
-    os.system("systemctl suspend")
+    os.system("systemctl shutdown")
     return render_template("statusmsg.html", status="heruntergefahren")
 
 
 @app.route("/api/v1/reboot", methods=["POST"])
 def reboot():
-    os.system("systemctl suspend")
+    os.system("systemctl reboot")
     return render_template("statusmsg.html", status="in den Ruhezustand versetzt")
 
 
@@ -76,13 +82,9 @@ def newCommit():
     return "1"
 
 
-@app.route("/api/v1/unmount", methods=["POST"])
-def unmountDrive():
-    drive = request.args_get("drive")
-
-    os.system("systemctl unmount " + drive)
-
-
 # TODO: exit debug mode before deploy to a server
 if __name__ == "__main__":
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(functions.sort_new_images, 'interval', seconds=20)
+    scheduler.start()
     app.run("0.0.0.0", debug=True)
