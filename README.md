@@ -1,5 +1,5 @@
 ![**Version**: 06-03-2023](https://img.shields.io/badge/version-06--03--2023-blueviolet?style=flat&logo=circle)
-<h1 align="center"> NAS-Mgmt</h1>
+<h1 align="center"> NAS-Management</h1>
 
 ....a simple, yet powerful User-Interface/Dashboard to control a up to 4 Disk, self hosted NAS System.
 
@@ -16,8 +16,9 @@
   * [📈 CPU Usage](#-cpu-usage)
   * [⚙️ Server Control](#-server-control-section)
 * [🔁 DNG Converter](#-dng-converter)
-* [✅Requirements](#-requirements)
-* [Contributors](#contributors)
+* [✅ Requirements](#-requirements)
+* [🥅 Planned Features](#-planned-features)
+* [👥 Contributors](#-contributors)
 ---
 ## 🖥️ Setup
 
@@ -121,6 +122,17 @@ sudo apt-get install gcc python3-dev
 
 ---
 
-## Contributors
+## 🥅 Planned Features
+
+-  ✅ Login form 
+- ☑️ implement check if user has admin permissions in the Dabase and show different content then to users that are "just" users
+- ☑️ List of services running on the machine & selection of shown services in a menu
+- ☑️ admin panel to add and remove users
+- ☑️ round status dials for CPU & Drive Usage
+- ☑️ complete makeover of UI
+
+---
+
+## 👥 Contributors
 
 <img src = "https://contrib.rocks/image?repo=AgentSchmisch/NAS_mgmt"/>

@@ -34,11 +34,9 @@ def login():
 
 @app.route("/main")
 def main():
+    # chekc whether user is in db and allowed to enter the page
     if allowed == True:
-        # get disk spaces of all the drive and render it to the template
-        # get the status of the disks and render it to the template
-        available_drives = functions.get_disks()
-        return render_template("index.html", drives=available_drives)
+        return render_template("index.html")
 
     else:
         return render_template("login.html", status="nicht angemeldet")

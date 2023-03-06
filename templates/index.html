@@ -3,10 +3,17 @@
 <head>
     <link rel="stylesheet" href="/static/styles.css">
     <title>NAS-Management</title>
-    <meta http-equiv="Content-Type" content="text/html" ; charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
 </head>
 
 <body>
+<ul class="navbar">
+    {if is_admin == 1}}
+   <li><a href="admin.html">Admin Interface</a></li>
+   <li><a href="services.html">Services</a></li>
+</ul>
+
+
 <div class="wrapper">
     <h1>Dashboard</h1>
     <div class="disk">
