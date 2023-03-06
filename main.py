@@ -3,6 +3,7 @@ import os
 import hashlib
 import requests
 import functions
+import mariadb
 from login.login import validate_credentials
 
 app = Flask(__name__)
@@ -19,13 +20,17 @@ def login():
     global allowed
     username = request.form.get("username")
     password = request.form.get("password")
-    is_in_db = validate_credentials(username, hashlib.sha256(password.encode()).hexdigest())
-    if is_in_db:
-        allowed = True
-        return redirect(url_for("main"))
-    else:
-        allowed = False
-        return render_template("login.html", status="Login Fehlgeschlagen")
+    try:
+        is_in_db = validate_credentials(username, hashlib.sha256(password.encode()).hexdigest())
+        if is_in_db:
+            allowed = True
+            return redirect(url_for("main"))
+        else:
+            allowed = False
+            return render_template("login.html", status="Login fehlgeschlagen")
+    except mariadb.Error as e:
+        return render_template("login.html", status="Login fehlgeschlagen")
+
 
 @app.route("/main")
 def main():
@@ -66,7 +71,6 @@ def hibernate():
 def newCommit():
     os.system("cd /var/www/html")
     os.system("git pull")
-
     return "1"
 
 

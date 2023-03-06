@@ -4,6 +4,10 @@ p{
 font-size: 1.3em;
 }
 
+h1{
+color:white;
+}
+
 .drive{
   background-color: rgba(42,41,83,255);
   float: left;
@@ -107,13 +111,16 @@ text-align:center;
   color: #fff;
   font-weight: bold;
   font-family: Tahoma;
+  border-radius: 10px;
 }
 
 .loginform h3{
  color: black;
+ font-size: 1.5em;
 }
 
 .loginform input{
-    height: 2em;
+    height: 1.5em;
     margin-top: 5px;
 }
+
