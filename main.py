@@ -32,9 +32,8 @@ def main():
     if allowed == True:
         # get disk spaces of all the drive and render it to the template
         # get the status of the disks and render it to the template
-        cpuUsage = functions.get_CPU_usage()
         available_drives = functions.get_disks()
-        return render_template("index.html", drives=available_drives, CPUusage=cpuUsage)
+        return render_template("index.html", drives=available_drives)
 
     else:
         return render_template("login.html", status="nicht angemeldet")

@@ -1,3 +1,5 @@
+/* Styles for Main Page*/
+
 p{
 font-size: 1.3em;
 }
@@ -61,7 +63,6 @@ color: rgba(254, 93, 38, 0.7);
 width: 30%;
 margin-left: 1em;
 color: green;
-
 }
 
 .buttonDrvControl{
@@ -79,6 +80,7 @@ color: green;
   text-align: center;
   padding: 1em 0 1em 0;
 }
+
 .status p{
     position: absolute;
     color:black;
@@ -89,71 +91,29 @@ color: green;
     padding: 1em 0 1em 0;
 }
 
+/* Styles for login Form */
 
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,700,300);
-
-body {
-  font-family: "Roboto", sans-serif;
-  background:#d2eaf1;
-
+.loginform{
+  display: flex;
+  justify-content: center;
 }
 
-.circle-wrap {
-  margin: 150px auto;
-  width: 150px;
-  height: 150px;
-  background: #fefcff;
-  border-radius: 50%;
-  border: 1px solid #cdcbd0;
+.loginform div{
+text-align:center;
+  width: 20em;
+  height: 15em;
+  padding: 10px;
+  background: rgba(0, 126, 167, 0.7);
+  color: #fff;
+  font-weight: bold;
+  font-family: Tahoma;
 }
 
-.circle-wrap .circle .mask,
-.circle-wrap .circle .fill {
-  width: 150px;
-  height: 150px;
-  position: absolute;
-  border-radius: 50%;
+.loginform h3{
+ color: black;
 }
 
-.circle-wrap .circle .mask {
-  clip: rect(0px, 150px, 150px, 75px);
-}
-
-.circle-wrap .inside-circle {
-  width: 122px;
-  height: 122px;
-  border-radius: 50%;
-  background: #d2eaf1;
-  line-height: 120px;
-  text-align: center;
-  margin-top: 14px;
-  margin-left: 14px;
-  color: #1e51dc;
-  position: absolute;
-  z-index: 100;
-  font-weight: 700;
-  font-size: 2em;
-}
-
-/* color animation */
-
-/* 3rd progress bar */
-.mask .fill {
-  clip: rect(0px, 75px, 150px, 0px);
-  background-color: #227ded;
-}
-
-.mask.full,
-.circle .fill {
-  animation: fill ease-in-out 3s;
-  transform: rotate(135deg);
-}
-
-@keyframes fill{
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(135deg);
-  }
+.loginform input{
+    height: 2em;
+    margin-top: 5px;
 }

@@ -62,3 +62,16 @@
       </div>
    </body>
 </html>
+
+<iframe id="cpuload"src="/api/v1/cpuload"></iframe>
+
+<script>
+    window.setInterval(function() {
+        reloadIFrame()
+    }, 3000);
+
+    function reloadIFrame() {
+        console.log('reloading..');
+        document.getElementById('cpuload').contentWindow.location.reload();
+    }
+</script>
