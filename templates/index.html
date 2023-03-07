@@ -8,9 +8,10 @@
 
 <body>
 <ul class="navbar">
-    {if is_admin == 1}}
-   <li><a href="admin.html">Admin Interface</a></li>
-   <li><a href="services.html">Services</a></li>
+   <li><a href="/api/v1/services">Services</a></li>
+    {% if is_admin %}
+   <li><a href="/api/v1/admin">Admin Interface</a></li>
+    {% endif %}
 </ul>
 
 

@@ -6,6 +6,7 @@ import hashlib
 import requests
 import functions
 import mariadb
+from login.db import get_all_users
 from apscheduler.schedulers.background import BackgroundScheduler
 from login.login import validate_credentials
 
@@ -20,11 +21,12 @@ def loginpage():
 
 @app.route("/login", methods=["POST"])
 def login():
+    global is_admin
     global allowed
     username = request.form.get("username")
     password = request.form.get("password")
     try:
-        is_in_db = validate_credentials(username, hashlib.sha256(password.encode()).hexdigest())
+        is_in_db, is_admin = validate_credentials(username, hashlib.sha256(password.encode()).hexdigest())
         if is_in_db:
             allowed = True
             return redirect(url_for("main"))
@@ -37,13 +39,19 @@ def login():
 
 @app.route("/main")
 def main():
-    # chekc whether user is in db and allowed to enter the page
+    # check whether user is in db and allowed to enter the page
     if allowed == True:
-        return render_template("index.html")
+        return render_template("index.html", is_admin=is_admin)
 
     else:
         return render_template("login.html", status="nicht angemeldet")
 
+@app.route("/api/v1/admin")
+def admin():
+
+    users = get_all_users()
+
+    return render_template("admin.html", users=users)
 
 @app.get("/api/v1/cpuload")
 def cpu_load():
