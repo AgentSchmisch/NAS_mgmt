@@ -47,12 +47,13 @@ def get_CPU_usage():
 
 def get_capture_date(path, image):
     # TODO: parse and convert date format to DD_MM_YYYY
-    return Image.open(path+image)._getexif()[36867]
+    return Image.open(path+"/"+image)._getexif()[36867]
 
 
 def convert_to_dng(path, image):
-
-    os.system("./dnglab convert "+path+image+" "+path+image.replace("CR3", "DNG"))
+    cmd = "./dnglab/dnglab convert "+path+"/"+image+" "+path+"/"+image.replace("CR3", "DNG")
+    print(cmd)
+    os.system(cmd)
 
 
 def sort_new_images():
@@ -78,9 +79,7 @@ def sort_new_images():
     for image in images_to_convert:
         print(image)
         # convert the image from cr3 to dng
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(convert_to_dng(path, image))
-        loop.close()
+        convert_to_dng(path, image)
 
 
 
@@ -91,7 +90,7 @@ def sort_new_images():
         # if a folder with the image date exists, move the file to the folder
         # if the folder doesn't exist...create it
         if date in folders:
-            shutil.move(path + image, path + date + image)
+            shutil.move(path +"/"+ image, path + date + image)
             print("moved to folder")
         else:
             os.mkdir(path + date)
