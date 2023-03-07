@@ -50,13 +50,9 @@ def get_capture_date(path, image):
     return Image.open(path+image)._getexif()[36867]
 
 
-async def convert_to_dng(path, image):
+def convert_to_dng(path, image):
 
-    dng_converter = DNGConverter(path+image,
-                                 dest=path,
-                                 jpeg_preview=flags.JPEGPreview.NONE,
-                                 fast_load=True)
-    return await dng_converter.convert()
+    os.system("./dnglab convert "+path+image+" "+path+image.replace("CR3", "DNG"))
 
 
 def sort_new_images():
