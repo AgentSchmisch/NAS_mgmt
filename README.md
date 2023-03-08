@@ -83,14 +83,14 @@ In this section there will be some controls for your server, like restarting, pu
 
 ---
 ## 🔁 DNG Converter
-This feature will automatically check if there are new files in a certain folders with .cr3 images and convert them to .dng
+This feature will automatically check if there are new files in a certain folders with `.cr3` images and convert them to `.dng
 
 - The converter check for new files in a certain folder you can copy the images there or use ftp to upload them to the folder
-- It is necessary that the images are pasted without any parent folder, the Converter will automatically sort them by date with the scheme `DD-MM-YYYY` 
+- It is necessary that the images are pasted without any parent folder, the Converter will automatically sort them by date with the scheme `YYYY_MM_DD` 
 - the capture date of the images are read from the EXIF data of the image, so make sure the date of your camera is set correctly
 - the converter will, by now, only convert `.cr3` images to `.dng`
-- it is mandatory for the feature to work to install [pydngconverter](https://github.com/BradenM/pydngconverter)
-
+- it is mandatory for the feature to work to install [dnglab](https://github.com/dnglab/dnglab)
+  - add the install path of the dnglab package to the config.json`
 ---
 
 ## ✅ Requirements
@@ -99,19 +99,19 @@ In the Package all the requirements will be included in a file called `requireme
 <details>
   <summary>Required Packages</summary>
 
-| Package          |
-|------------------|
-| ✅ Flask          |
-| ✅ pydngconverter |
-| ✅ PIL            |
-| ✅ MariaDB        |
-| ✅ requests       |
-| ✅ os             |
-| ✅ shutil         |
-| ✅ psutil         |
-| ✅ re             |
-| ✅ hashlib        |
-| ✅ asyncio        |             
+| Package    |
+|------------|
+| ✅ Flask    |
+| ✅ dnglab   |
+| ✅ PIL      |
+| ✅ MariaDB  |
+| ✅ requests |
+| ✅ os       |
+| ✅ shutil   |
+| ✅ psutil   |
+| ✅ re       |
+| ✅ hashlib  |
+| ✅ asyncio  |             
 
  It is also necessary to install following packages manually with:
 

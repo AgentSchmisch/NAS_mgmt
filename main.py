@@ -6,9 +6,11 @@ import hashlib
 import requests
 import functions
 import mariadb
+
 from login.db import get_all_users
 from apscheduler.schedulers.background import BackgroundScheduler
 from login.login import validate_credentials
+
 
 app = Flask(__name__)
 allowed = False
@@ -90,7 +92,12 @@ def newCommit():
     return "1"
 
 
+@app.get("/services/pihole")
+def route_to_pihole():
+        return redirect("http://localhost:8080")
+
 # TODO: exit debug mode before deploy to a server
+# TODO: add job for automatic system updates and restarts every 1/3 year or so
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
     scheduler.add_job(functions.sort_new_images, 'interval', seconds=20)

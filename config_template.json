@@ -6,6 +6,7 @@
   "database": "your_database_name"
 },
   "folders": {
-    "dng_converter": "your_image_folder"
+    "ftp_path": "your_image_folder",
+    "dnglab": "./path/to/dnglab/installation/executable"
   }
 }

@@ -1,12 +1,11 @@
 import os
 import shutil
+import subprocess
 from typing import List
-import asyncio
-from pydngconverter import DNGConverter, flags
 from PIL import Image, ExifTags
+import time
 
 from config_helper import load_conf
-
 
 import psutil
 import re
@@ -42,55 +41,87 @@ def get_CPU_usage():
     for _ in freq1:
         freq.append(freq1[y][0])
     y += 1
-    return usage #, freq
+    return usage  # , freq
 
 
 def get_capture_date(path, image):
-    # TODO: parse and convert date format to DD_MM_YYYY
-    return Image.open(path+"/"+image)._getexif()[36867]
+    #  parse and convert date to YYYY_MM_DD
+
+    raw_date = Image.open(path + "/" + image).getexif()[306]
+    # output: YYYY:MM:DD HH:MM:SS
+    # ...split string before space...
+    raw_date_array = raw_date.split(" ")
+    # ...and replace : with _
+    capture_date = raw_date_array[0].replace(":", "_")
+    return capture_date
 
 
 def convert_to_dng(path, image):
-    cmd = "./dnglab/dnglab convert "+path+"/"+image+" "+path+"/"+image.replace("CR3", "DNG")
-    print(cmd)
-    os.system(cmd)
+    # TODO: get path of dnglab install from config.json
+    config_obj = load_conf()
+    path_dnglab = config_obj["folders"]["dnglab"]
+    source = path + "/" + image
+    output = path + "/" + image.replace("CR3", "DNG")
+    proc = subprocess.Popen([path_dnglab, "convert", source, output])
+    while proc.poll() is None:
+        time.sleep(2)
+
+# TODO: reading image EXIF after conversion
+
+def get_file_extension(file):
+    temp = file.split(".")
+    if len(temp) == 1:
+        if os.path.isdir(file):  # check if the file is a folder, return the extension "folder"
+            extension = "folder"
+            file_name = temp[len(temp) - 1]
+        else:  # if it is a file without any extension return an empty string
+            extension = ""
+            file_name = temp[len(temp) - 1]
+    else:
+        extension = temp[len(temp) - 1]
+        file_name = temp[0]
+    return file_name, extension
 
 
 def sort_new_images():
     config_obj = load_conf()
     pathx = config_obj["folders"]
-    path = pathx["dng_converter"]
+    path = pathx["ftp_path"]
     files = os.listdir(path)
     allowed_image_types = ["jpg", "jpeg", "cr3", "cr2", "DNG", "dng", "CR3"]
     folders = []
     images_to_convert = []
     images = []
-
     for file in files:
-        temp = file.split(".")
-        print(temp[len(temp) - 1])
-        if temp[len(temp) - 1] == "":
+        filename, extension = get_file_extension(file)
+        if extension == "folder":  # append the folders to the folders list
             folders.append(file)
-        elif temp[len(temp) - 1] in allowed_image_types:  # append all files to the images list
+        elif extension in allowed_image_types:  # append all images to the images list
             images.append(file)
-            if temp[len(temp) - 1] == "cr3" or temp[len(temp) - 1] == "CR3":  # if the image is cr3 append it to the to do list for the converter
+            if extension == "cr3" or extension == "CR3":  # if the image is cr3 append it to the to do list for the converter
                 images_to_convert.append(file)
-    print(images_to_convert)
     for image in images_to_convert:
-        print(image)
         # convert the image from cr3 to dng
         convert_to_dng(path, image)
 
-
-
     for image in images:
+        filename, extension = get_file_extension(image)
+
+        # only send .dng files to the function, cr3 images will be moved due to their names
+        if extension == "dng":
+            date = get_capture_date(path, image)
+        else:
+            continue
+        print(folders)
         # get exif Data to read the date & check whether file is cr3 thus needing to be converted
-        date = get_capture_date(path,image)
 
         # if a folder with the image date exists, move the file to the folder
         # if the folder doesn't exist...create it
         if date in folders:
-            shutil.move(path +"/"+ image, path + date + image)
+            shutil.move(path + "/" + image, path + "/" + date + "/" + image)
+            shutil.move(path + "/" + image.replace("dng", "CR3"), path + "/" + date + "/" + image.replace("dng", "CR3"))
             print("moved to folder")
         else:
-            os.mkdir(path + date)
+            os.mkdir(path + "/" + date)
+            shutil.move(path + "/" + image, path + "/" + date + "/" + image)
+            shutil.move(path + "/" + image.replace("dng", "CR3"), path + "/" + date + "/" + image.replace("dng", "CR3"))
