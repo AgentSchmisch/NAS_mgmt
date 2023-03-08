@@ -90,7 +90,7 @@ This feature will automatically check if there are new files in a certain folder
 - the capture date of the images are read from the EXIF data of the image, so make sure the date of your camera is set correctly
 - the converter will, by now, only convert `.cr3` images to `.dng`
 - it is mandatory for the feature to work to install [dnglab](https://github.com/dnglab/dnglab)
-  - add the install path of the dnglab package to the config.json`
+  - add the install path of the dnglab package to the `config.json`
 ---
 
 ## ✅ Requirements
