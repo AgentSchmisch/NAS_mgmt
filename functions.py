@@ -46,8 +46,14 @@ def get_CPU_usage():
 
 def get_capture_date(path, image):
     #  parse and convert date to YYYY_MM_DD
+    raw_date = ""
+    try:
+     raw_date = Image.open(path + "/" + image).getexif()[306]
+    except Exception as e:
+        file = open("log.txt","w+")
+        file.write(str(e))
+        file.close()
 
-    raw_date = Image.open(path + "/" + image).getexif()[306]
     # output: YYYY:MM:DD HH:MM:SS
     # ...split string before space...
     raw_date_array = raw_date.split(" ")
@@ -106,18 +112,16 @@ def sort_new_images():
 
     for image in images:
         filename, extension = get_file_extension(image)
-
         # only send .dng files to the function, cr3 images will be moved due to their names
         if extension == "dng":
             date = get_capture_date(path, image)
         else:
             continue
-        print(folders)
         # get exif Data to read the date & check whether file is cr3 thus needing to be converted
 
         # if a folder with the image date exists, move the file to the folder
         # if the folder doesn't exist...create it
-        if date in folders:
+        if os.path.exists(path+"/"+date):
             shutil.move(path + "/" + image, path + "/" + date + "/" + image)
             shutil.move(path + "/" + image.replace("dng", "CR3"), path + "/" + date + "/" + image.replace("dng", "CR3"))
             print("moved to folder")

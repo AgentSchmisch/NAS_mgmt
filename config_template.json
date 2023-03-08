@@ -7,6 +7,6 @@
 },
   "folders": {
     "ftp_path": "your_image_folder",
-    "dnglab": "./path/to/dnglab/installation/executable"
+    "dnglab": "/path/to/dnglab/installation/executable"
   }
 }

@@ -100,6 +100,6 @@ def route_to_pihole():
 # TODO: add job for automatic system updates and restarts every 1/3 year or so
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
-    scheduler.add_job(functions.sort_new_images, 'interval', seconds=20)
+    scheduler.add_job(functions.sort_new_images, 'interval', seconds=2)
     scheduler.start()
     app.run("0.0.0.0", debug=True)
