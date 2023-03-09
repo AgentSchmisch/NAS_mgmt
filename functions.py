@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import json
 from typing import List
 from PIL import Image, ExifTags
 import time
@@ -45,14 +46,14 @@ def get_CPU_usage():
 
 
 def get_capture_date(path, image):
-    #  parse and convert date to YYYY_MM_DD
-    raw_date = ""
-    try:
-     raw_date = Image.open(path + "/" + image).getexif()[306]
-    except Exception as e:
-        file = open("log.txt","w+")
-        file.write(str(e))
-        file.close()
+    # parse and convert date to YYYY_MM_DD
+    config_obj = load_conf()
+    path_dnglab = config_obj["folders"]["dnglab"]
+    source = path + "/" + image
+    proc = subprocess.Popen([path_dnglab, "analyze --meta", source], stdout=subprocess.PIPE)
+    raw_meta = json.loads(proc.stdout.read().decode("utf-8"))
+
+    raw_date = raw_meta["data"]["metadata"]["rawMetadata"]["exif"]["create_date"]
 
     # output: YYYY:MM:DD HH:MM:SS
     # ...split string before space...
@@ -63,7 +64,7 @@ def get_capture_date(path, image):
 
 
 def convert_to_dng(path, image):
-    # TODO: get path of dnglab install from config.json
+    # TODO refactor function to convert complete folders
     config_obj = load_conf()
     path_dnglab = config_obj["folders"]["dnglab"]
     source = path + "/" + image
@@ -72,20 +73,13 @@ def convert_to_dng(path, image):
     while proc.poll() is None:
         time.sleep(2)
 
+
 # TODO: reading image EXIF after conversion
 
 def get_file_extension(file):
     temp = file.split(".")
-    if len(temp) == 1:
-        if os.path.isdir(file):  # check if the file is a folder, return the extension "folder"
-            extension = "folder"
-            file_name = temp[len(temp) - 1]
-        else:  # if it is a file without any extension return an empty string
-            extension = ""
-            file_name = temp[len(temp) - 1]
-    else:
-        extension = temp[len(temp) - 1]
-        file_name = temp[0]
+    extension = temp[len(temp) - 1]
+    file_name = temp[0]
     return file_name, extension
 
 
@@ -95,20 +89,15 @@ def sort_new_images():
     path = pathx["ftp_path"]
     files = os.listdir(path)
     allowed_image_types = ["jpg", "jpeg", "cr3", "cr2", "DNG", "dng", "CR3"]
-    folders = []
     images_to_convert = []
+    folders = []
     images = []
     for file in files:
         filename, extension = get_file_extension(file)
-        if extension == "folder":  # append the folders to the folders list
-            folders.append(file)
-        elif extension in allowed_image_types:  # append all images to the images list
+        if extension in allowed_image_types:  # append all images to the images list
             images.append(file)
             if extension == "cr3" or extension == "CR3":  # if the image is cr3 append it to the to do list for the converter
                 images_to_convert.append(file)
-    for image in images_to_convert:
-        # convert the image from cr3 to dng
-        convert_to_dng(path, image)
 
     for image in images:
         filename, extension = get_file_extension(image)
@@ -121,11 +110,17 @@ def sort_new_images():
 
         # if a folder with the image date exists, move the file to the folder
         # if the folder doesn't exist...create it
-        if os.path.exists(path+"/"+date):
+        if os.path.exists(path + "/" + date):
+            folders.append(date)
             shutil.move(path + "/" + image, path + "/" + date + "/" + image)
             shutil.move(path + "/" + image.replace("dng", "CR3"), path + "/" + date + "/" + image.replace("dng", "CR3"))
             print("moved to folder")
         else:
             os.mkdir(path + "/" + date)
+            folders.append(date)
             shutil.move(path + "/" + image, path + "/" + date + "/" + image)
             shutil.move(path + "/" + image.replace("dng", "CR3"), path + "/" + date + "/" + image.replace("dng", "CR3"))
+
+    for folder in folders:
+        # convert the image from cr3 to dng
+        convert_to_dng(path, folder)
