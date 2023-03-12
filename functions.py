@@ -45,25 +45,11 @@ def get_CPU_usage():
 
 
 def get_capture_date(path, image):
-    # parse and convert date to YYYY_MM_DD
-    config_obj = load_conf()
-    path_dnglab = config_obj["folders"]["dnglab"]
-    source = path + "/" + image
 
-    cmd = path_dnglab + " analyze --meta " + source  # "--meta "
-
+    cmd = "python3 get_capture_dates.py -p " + path + " -i " + image
     raw_cmd_out = os.popen(cmd).read()
-
-    raw_meta = json.loads(raw_cmd_out)
-
-    raw_date = raw_meta["data"]["metadata"]["rawMetadata"]["exif"]["create_date"]
-
-    # output: YYYY:MM:DD HH:MM:SS
-    # ...split string before space...
-    raw_date_array = raw_date.split(" ")
-    # ...and replace : with _
-    capture_date = raw_date_array[0].replace(":", "_")
-    return capture_date
+    #print(raw_cmd_out)
+    return raw_cmd_out
 
 
 def convert_to_dng(path, folder):
@@ -83,7 +69,6 @@ def convert_to_dng(path, folder):
                 time.sleep(2)
 
 
-# TODO: reading image EXIF after conversion
 
 def get_file_extension(file):
     temp = file.split(".")
@@ -123,7 +108,7 @@ def sort_new_images():
             if os.path.exists(path + "/" + date):
                 folders.append(date)
                 shutil.move(path + "/" + image, path + "/" + date + "/" + image)
-                print("moved to folder")
+                #print("moved to folder" + path + "/" + date + "/" + image)
             else:
                 os.mkdir(path + "/" + date)
                 folders.append(date)
@@ -136,3 +121,13 @@ def sort_new_images():
         with open(path + "log.txt", "w+") as file:
             file.write(str(ex))
             file.close()
+
+
+def update_machine():
+    proc = subprocess.Popen("apt update")
+    while proc.poll() is None:
+        time.sleep(2)
+
+    proc = subprocess.Popen("apt upgrade")
+    while proc.poll() is None:
+        time.sleep(2)

@@ -94,12 +94,12 @@ def newCommit():
 
 @app.get("/services/pihole")
 def route_to_pihole():
-        return redirect("http://localhost:8080")
+        return redirect("http://10.0.0.20/admin/")
 
 # TODO: exit debug mode before deploy to a server
-# TODO: add job for automatic system updates and restarts every 1/3 year or so
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
-    scheduler.add_job(functions.sort_new_images, 'interval', seconds=2)
+    scheduler.add_job(functions.sort_new_images, 'interval', seconds=10)
+    scheduler.add_job(functions.update_machine, 'interval', days=118)
     scheduler.start()
     app.run("0.0.0.0", debug=True)

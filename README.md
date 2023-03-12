@@ -60,7 +60,7 @@ table name: `users`
 - id (uuid4 string)
 - username (str)
 - password (sha256 hash)
-- is_admin (boolean)
+- admin (tinyint)
   
 </details>
 
@@ -83,7 +83,7 @@ In this section there will be some controls for your server, like restarting, pu
 
 ---
 ## 🔁 DNG Converter
-This feature will automatically check if there are new files in a certain folders with `.cr3` images and convert them to `.dng
+This feature will automatically check if there are new files in a certain folders with `.cr3` images and convert them to `.dng`
 
 - The converter check for new files in a certain folder you can copy the images there or use ftp to upload them to the folder
 - It is necessary that the images are pasted without any parent folder, the Converter will automatically sort them by date with the scheme `YYYY_MM_DD` 
