@@ -46,10 +46,14 @@ def get_CPU_usage():
 
 def get_capture_date(path, image):
 
+    expr = r'\d+'
+
     cmd = "python3 get_capture_dates.py -p " + path + " -i " + image
     raw_cmd_out = os.popen(cmd).read()
-    #print(raw_cmd_out)
-    return raw_cmd_out
+
+    dates = re.findall(expr, raw_cmd_out)
+    date = dates[0] + "_" + dates[1] + "_" + dates[2]
+    return date
 
 
 def convert_to_dng(path, folder):
