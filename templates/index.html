@@ -1,64 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <link rel="stylesheet" href="/static/styles.css">
-   <title>NAS-Management</title>
-   <meta http-equiv="Content-Type" content="text/html"; charset="utf-8">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>NAS-Management</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
 </head>
 
-   <body>
-      <div class="wrapper">
-            <h1>Dashboard</h1>
-         <div class="drive-wrapper">
-         <h1 class="header">HDD Status</h1>
-         <div class="drive">
-            <p>Drive1<progress class="storage" id="p1"></progress>{{D1}}
-               <button class="buttonDrvControl">drive unmounten</button>
-            </p>
-         </div>
-
-            <div class="drive">
-            <p>Drive2<progress class="storage" id="p2"></progress>{{D2}}
-               <button class="buttonDrvControl">drive unmounten</button>
-            </p>
-            </div>
-
-            <div class="drive">
-            <p>Drive3<progress class="storage" id="p3"></progress>{{D3}}
-               <button class="buttonDrvControl">drive unmounten</button>
-            </p>
-            </div>
-
-            <div class="drive">
-            Drive4<p>
-
-               {{D4}}
-               <button class="buttonDrvControl">drive unmounten</button>
-            </div>
-         </div>
-
-         <div class="cpu">
-            <h1 class="header">CPU Status</h1>
-            <p> {{CPUusage}}</p>
-            <p>Core 1<progress id="p5" class="cpuUsage"></progress>{{C1}}</p>
-            <p>Core 2<progress id="p6" class="cpuUsage"></progress>{{C2}}</p>
-            <p>Core 3<progress id="p7" class="cpuUsage"></progress>{{C3}}</p>
-            <p>Core 4<progress id="p8" class="cpuUsage"></progress>{{C4}}</p>
+<body>
+<ul class="navbar">
+   <li><a href="/api/v1/services">Services</a></li>
+    {% if is_admin %}
+   <li><a href="/api/v1/admin">Admin Interface</a></li>
+    {% endif %}
+</ul>
 
 
-         </div>
-         <div class="pc">
-            <h1 class="header">Server Steuerung</h1>
-            <form action="/api/v1/shutdown" method="post">
-                <input type="submit" class="buttonSrvControl" value="Herunterfahren">
-            </form>
-            <form action="/api/v1/reboot" method="post">
-                <input type="submit" class="buttonSrvControl" value="Neustarten">
-            </form>
-            <form action="/api/v1/hibernate" method="post">
-                <input type="submit" class="buttonSrvControl" value="Ruhezustand">
-            </form>
-         </div>
-      </div>
-   </body>
+<div class="wrapper">
+    <h1>Dashboard</h1>
+    <div class="disk">
+        <iframe id="diskspace" src="/api/v1/diskspace"></iframe>
+    </div>
+
+    <div class="cpu">
+        <h1 class="header">CPU Status</h1>
+        <iframe id="cpuload" src="/api/v1/cpuload"></iframe>
+    </div>
+    <div class="pc">
+        <h1 class="header">Server Steuerung</h1>
+        <form action="/api/v1/shutdown" method="post">
+            <input type="submit" class="buttonSrvControl" value="Herunterfahren">
+        </form>
+        <form action="/api/v1/reboot" method="post">
+            <input type="submit" class="buttonSrvControl" value="Neustarten">
+        </form>
+        <form action="/api/v1/hibernate" method="post">
+            <input type="submit" class="buttonSrvControl" value="Ruhezustand">
+        </form>
+    </div>
+</div>
+<script>
+    window.setInterval(function() {
+        reloadIFrame()
+    }, 3000);
+
+    function reloadIFrame() {
+        console.log('reloading..');
+        document.getElementById('cpuload').contentWindow.location.reload();
+        document.getElementById('diskspace').contentWindow.location.reload();
+    }
+
+</script>
+</body>
 </html>
+
+
+

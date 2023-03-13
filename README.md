@@ -1,10 +1,9 @@
-![**Version**: 28-02-2023](https://img.shields.io/badge/version-28--02--2023-blueviolet?style=flat&logo=circle)
-<h1 align="center"> NAS-Mgmt</h1>
+![**Version**: 06-03-2023](https://img.shields.io/badge/version-06--03--2023-blueviolet?style=flat&logo=circle)
+<h1 align="center"> NAS-Management</h1>
 
 ....a simple, yet powerful User-Interface/Dashboard to control a up to 4 Disk, self hosted NAS System.
 
 ---
-
 ## 🧭 Contents
 * [🧭 Contents](#-contents)
 * [🖥️ Setup](#-setup)
@@ -16,15 +15,18 @@
   * [📈 CPU Usage](#-cpu-usage)
   * [⚙️ Server Control](#-server-control-section)
 * [🔁 DNG Converter](#-dng-converter)
-* [✅Requirements](#-requirements)
-* [Contributors](#contributors)
+* [✅ Requirements](#-requirements)
+* [🥅 Planned Features](#-planned-features)
+* [👥 Contributors](#-contributors)
 ---
+
 ## 🖥️ Setup
 
 - It is important to start the software as root so all the PC's commands can be executed without prompting for a password
 - there will be a packaged version of the repository so setup will be easier
+- start off by installing all the requirements listed in [✅ Requirements](#-requirements)
 
-To Start the program use...
+To start the program afterwards, use...
 
 ```bash
 cd your/project/folder
@@ -41,13 +43,28 @@ The website auto Updater is used to pull a specific repository from a self-hoste
 - In a repository create a webhook routing to your webserver on the address `localhost:5000/api/v1/newCommit` 
 - push to the "production" branch and your local repository will be automatically updated
 
+---
+
 ## 🔒 Login
 To access the Dashboard you need to create an account in a MariaDB Database, the scheme of the database is currently the following
 
-| username | password    | admin |
-|----------|-------------|-------|
-| str(50)  | sha256 hash | bool  |   
+table name: `users`
 
+| id           | username     | password     | admin   |
+|--------------|--------------|--------------|---------|
+| varchar(100) | varchar(100) | varchar(100) | tinyint |   
+
+<details>
+  <summary>Column Details</summary>
+
+- id (uuid4 string)
+- username (str)
+- password (sha256 hash)
+- admin (tinyint)
+  
+</details>
+
+---
 
 ## 📊 Dashboard
 The dashboard is used to control a variety of different functions from the server:
@@ -66,13 +83,15 @@ In this section there will be some controls for your server, like restarting, pu
 
 ---
 ## 🔁 DNG Converter
-This feature will automatically check if there are new files in a certain folders with .cr3 images and convert them to .dng
+This feature will automatically check if there are new files in a certain folders with `.cr3` images and convert them to `.dng`
 
 - The converter check for new files in a certain folder you can copy the images there or use ftp to upload them to the folder
-- It is necessary that the images are pasted without any parent folder, the Converter will automatically sort them by date with the scheme `DD-MM-YYYY` 
+- It is necessary that the images are pasted without any parent folder, the Converter will automatically sort them by date with the scheme `YYYY_MM_DD` 
 - the capture date of the images are read from the EXIF data of the image, so make sure the date of your camera is set correctly
 - the converter will, by now, only convert `.cr3` images to `.dng`
-- it is mandatory for the feature to work to install [pydngconverter](https://github.com/BradenM/pydngconverter)
+- it is mandatory for the feature to work to install [dnglab](https://github.com/dnglab/dnglab)
+  - add the install path of the dnglab package to the `config.json`
+---
 
 ## ✅ Requirements
 
@@ -80,19 +99,19 @@ In the Package all the requirements will be included in a file called `requireme
 <details>
   <summary>Required Packages</summary>
 
-| Package          |
-|------------------|
-| ✅ Flask          |
-| ✅ pydngconverter |
-| ✅ PIL            |
-| ✅ MariaDB        |
-| ✅ requests       |
-| ✅ os             |
-| ✅ shutil         |
-| ✅ psutil         |
-| ✅ re             |
-| ✅ hashlib        |
-| ✅ asyncio        |             
+| Package    |
+|------------|
+| ✅ Flask    |
+| ✅ dnglab   |
+| ✅ PIL      |
+| ✅ MariaDB  |
+| ✅ requests |
+| ✅ os       |
+| ✅ shutil   |
+| ✅ psutil   |
+| ✅ re       |
+| ✅ hashlib  |
+| ✅ asyncio  |             
 
  It is also necessary to install following packages manually with:
 
@@ -103,6 +122,19 @@ sudo apt-get install gcc python3-dev
 
 </details>
 
-## Contributors
+---
+
+## 🥅 Planned Features
+
+- ✅   Login form 
+- ☑️ implement check if user has admin permissions in the Dabase and show different content then to users that are "just" users
+- ☑️ List of services running on the machine & selection of shown services in a menu
+- ☑️ admin panel to add and remove users
+- ☑️ round status dials for CPU & Drive Usage
+- ☑️ complete makeover of UI
+
+---
+
+## 👥 Contributors
 
 <img src = "https://contrib.rocks/image?repo=AgentSchmisch/NAS_mgmt"/>
