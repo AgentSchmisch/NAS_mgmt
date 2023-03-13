@@ -57,9 +57,21 @@ def admin():
 
 @app.get("/api/v1/cpuload")
 def cpu_load():
+
     Cpu_load = functions.get_CPU_usage()
+
+    #req = requests.post("localhost:1880/api/test",Cpu_load)
+
     return render_template("cpu_status.html", load=Cpu_load)
 
+def post_cpu_load():
+    cpu_load = functions.get_CPU_usage()
+
+    json = {"test": cpu_load}
+    print(json)
+
+    re =requests.post("http://localhost:1880/api/cpuload", json)
+    return re.text
 
 @app.get("/api/v1/diskspace")
 def disk_space():
@@ -101,5 +113,6 @@ if __name__ == "__main__":
     scheduler = BackgroundScheduler()
     scheduler.add_job(functions.sort_new_images, 'interval', seconds=10)
     scheduler.add_job(functions.update_machine, 'interval', days=118)
+    scheduler.add_job(post_cpu_load, 'interval', seconds=1.75)
     scheduler.start()
     app.run("0.0.0.0", debug=True)
