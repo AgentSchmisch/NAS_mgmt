@@ -114,7 +114,6 @@ def sort_new_images():
             if os.path.exists(path + "/" + date):
                 folders.append(date)
                 shutil.move(path + "/" + image, path + "/" + date + "/" + image)
-                #print("moved to folder" + path + "/" + date + "/" + image)
             else:
                 os.mkdir(path + "/" + date)
                 folders.append(date)
@@ -148,5 +147,5 @@ def update_system_status():
         "storage": storage
     }
 
-    re = requests.post("http://localhost:1880/api/cpuload", status)
-    return re.text
+    post_system_status = requests.post("http://localhost:1880/api/cpuload", status)
+    return post_system_status.text
