@@ -5,13 +5,15 @@ import json
 from typing import List
 from PIL import Image, ExifTags
 import time
+import requests
 
 from config_helper import load_conf
 
 import psutil
 import re
 
-def get_disks():
+
+def get_disk_space():
     regex = r"/dev/sd"
     all_disk = psutil.disk_partitions()
     physical_disks = []
@@ -135,3 +137,16 @@ def update_machine():
     proc = subprocess.Popen("apt upgrade")
     while proc.poll() is None:
         time.sleep(2)
+
+
+def update_system_status():
+    storage = get_disk_space()
+    cpu_load = get_CPU_usage()
+
+    status = {
+        "cpu": cpu_load,
+        "storage": storage
+    }
+
+    re = requests.post("http://localhost:1880/api/cpuload", status)
+    return re.text

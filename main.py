@@ -75,7 +75,7 @@ def post_cpu_load():
 
 @app.get("/api/v1/diskspace")
 def disk_space():
-    Disk_space = functions.get_disks()
+    Disk_space = functions.get_disk_space()
     return render_template("disk_space.html", space=Disk_space)
 
 
