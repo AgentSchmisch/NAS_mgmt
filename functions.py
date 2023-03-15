@@ -24,7 +24,7 @@ def get_disk_space():
         match = re.match(regex, temp)
 
         if (match is not None):
-            physical_disks.append(all_disk[y][1])  # returns disk mounting point of all disks
+            physical_disks.append(all_disk[y][1])  # returns dev path of all disks
         else:
             continue
         y += 1
@@ -146,6 +146,8 @@ def update_system_status():
         "cpu": cpu_load,
         "storage": storage
     }
+    config_obj = load_conf()
+    nodered = config_obj["addresses"]["nodered"]
 
-    post_system_status = requests.post("http://localhost:1880/api/cpuload", status)
+    post_system_status = requests.post("http://" + nodered + "/api/cpuload", status)
     return post_system_status.text

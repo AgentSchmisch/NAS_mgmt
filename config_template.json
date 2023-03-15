@@ -1,12 +1,15 @@
 {
-"mysql": {
-  "host":"your_mysql_server_address",
-  "username": "your_mysql_username",
-  "password": "your_mysql_password",
-  "database": "your_database_name"
-},
+  "mysql": {
+    "host": "your_mysql_server_address",
+    "username": "your_mysql_username",
+    "password": "your_mysql_password",
+    "database": "your_database_name"
+  },
   "folders": {
     "ftp_path": "your_image_folder",
     "dnglab": "/path/to/dnglab/installation/executable"
+  },
+  "addresses": {
+    "nodered": "192.168.0.255:1880"
   }
 }
