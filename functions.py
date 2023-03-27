@@ -52,8 +52,10 @@ def get_capture_date(path, image):
 
     cmd = "python3 get_capture_dates.py -p " + path + " -i " + image
     raw_cmd_out = os.popen(cmd).read()
-
+    time.sleep(3)
+    print("raw" + raw_cmd_out)
     dates = re.findall(expr, raw_cmd_out)
+    print(dates)
     date = dates[0] + "_" + dates[1] + "_" + dates[2]
     return date
 
@@ -82,6 +84,19 @@ def get_file_extension(file):
     file_name = temp[0]
     return file_name, extension
 
+def get_capture_date_jpg(path,image):
+    img = Image.open(path+"/"+image)
+
+    raw_date = img.getexif()[306]
+    print(raw_date)
+    # output: YYYY:MM:DD HH:MM:SS
+    # ...split string before space...
+    raw_date_array = raw_date.split(" ")
+    # ...and replace : with _
+    capture_date = raw_date_array[0].replace(":", "_")
+    print(capture_date)
+    return capture_date
+
 
 def sort_new_images():
     config_obj = load_conf()
@@ -105,6 +120,8 @@ def sort_new_images():
             # only send .dng files to the function, cr3 images will be moved due to their names
             if extension == "CR3":
                 date = get_capture_date(path, image)
+            elif extension == "JPG":
+                date = get_capture_date_jpg(path, image)
             else:
                 continue
             # get exif Data to read the date & check whether file is cr3 thus needing to be converted

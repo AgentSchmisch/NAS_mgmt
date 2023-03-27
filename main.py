@@ -68,9 +68,9 @@ def post_cpu_load():
     cpu_load = functions.get_CPU_usage()
 
     json = {"test": cpu_load}
-    print(json)
+    #print(json)
 
-    re =requests.post("http://localhost:1880/api/cpuload", json)
+    re = requests.post("http://localhost:1880/api/cpuload", json)
     return re.text
 
 @app.get("/api/v1/diskspace")
