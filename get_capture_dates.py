@@ -12,15 +12,14 @@ args = parser.parse_args()
 image = args.image
 path = args.path
 
-# WARNING: if using this function the print statements are used as the output of the command.....not the return value
+# WARNING: if using this function, the print statements are used as the output of the command.....not the return value
 
 def get_capture_date(path,image):
     # parse and convert date to YYYY_MM_DD
     config_obj = load_conf()
-    path_dnglab = config_obj["folders"]["dnglab"]
     source = path + "/" + image
 
-    cmd = path_dnglab + " analyze --meta " + source
+    cmd = "dnglab analyze --meta " + source
 
     raw_cmd_out = os.popen(cmd).read()
 
