@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 import config_helper
 import requests
+import os
 
 """ Log levels
 Debug
@@ -49,8 +50,7 @@ def logger(level,name):
 
 
 def cleanup_old_logs():
-    # this function will be executed every day at 12pm with a Background 
-    #TODO: check if there are logs older than x days, and delete them
+    # this function will be executed every day at 12pm with a BackgroundScheduler to delete old logs 
     config_obj = config_helper.load_conf()
     log_folder = config_obj["folders"]["log_path"]
 
@@ -65,9 +65,3 @@ def cleanup_old_logs():
     log.info("deleted old logs")
     return true
 
-def send_logs_to_nodered(level, name):
-    config_obj = config_helper.load_conf()
-    nodered = config_obj["addresses"]["nodered"]
-    requests.post("http://"+ nodered +"/api/v1/logging", log)
-    #TODO Create post requests that will push formatted data from logs to nodered where it will be presented more appealing
-    return true

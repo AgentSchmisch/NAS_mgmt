@@ -3,19 +3,21 @@ import os
 import hashlib
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
-from functions import *
+
+from functions import (sort_remaining_images,
+                       update_system_status,
+                       update_machine,
+                       )
+
 import multitasking
 from ftp import init_ftp_server
 
 
 from logger import logger, cleanup_old_logs
 from config_helper import load_conf
+import logging
 
-# TODO: error handling with log files that get written into a folder that is presented in a nextcloud share
-
-
-
-#log = logger(logging.DEBUG,"api")
+log = logger(logging.DEBUG,"api")
 
 @multitasking.task
 def start_flask():
@@ -78,13 +80,11 @@ def start_flask():
     app.run(host="0.0.0.0")
 
 
-# TODO: exit debug mode before deploy to a server
 if __name__ == "__main__":
-
     scheduler = BackgroundScheduler()
-    scheduler.add_job(functions.sort_remaining_images, "cron", day_of_week= 'mon-sun', hour = 2)
+    scheduler.add_job(sort_remaining_images, "cron", day_of_week= 'mon-sun', hour = 2)
     scheduler.add_job(cleanup_old_logs, "cron", day_of_week= 'mon-sun', hour = 0)
-    scheduler.add_job(functions.sort_new_images, 'interval', seconds=10)
+    #scheduler.add_job(sort_new_images, 'interval', seconds=10)
     scheduler.add_job(update_machine, 'interval', days=118)
     scheduler.add_job(update_system_status, 'interval', seconds=1.75)
     scheduler.start()
