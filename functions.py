@@ -22,7 +22,7 @@ lock = Lock()
 
 log = logger(logging.DEBUG, "functions")
 
-allowed_image_types = ["jpg", "jpeg", "cr3", "cr2", "dng"]
+allowed_image_types = ["jpg", "jpeg", "cr3", "cr2", "dng","mp4"]
 
 def get_disk_space():
 
@@ -37,17 +37,10 @@ def get_disk_space():
 # get cpu usage and frequency per core
 def get_CPU_usage():
     usage = psutil.cpu_percent(interval=1, percpu=True)
-    freq1 = psutil.cpu_freq(percpu=True)
-    freq = []
-    y = 0
-    for _ in freq1:
-        freq.append(freq1[y][0])
-    y += 1
-    return usage  # , freq
+    return usage
 
 
 def get_capture_date(path, image):
-
     expr = r'\d+'
     print(image)
     cmd = "python3 get_capture_dates.py -p " + path + " -i " + image
@@ -60,7 +53,23 @@ def get_capture_date(path, image):
     return date
 
 
+def convert_single_image(path,image):
+    try:
+        proc = subprocess.Popen(["dnglab convert",path])
+        while proc.poll() is None:
+            time.sleep(2)
+        return true
+    except:
+        return false
+
 def convert_to_dng(path, folder):
+    """
+    Parameters
+    path: full path of the parent folder
+    folder: folder to be converted
+
+    this function converts a whole folder from .cr3 to .dng
+    """
     config_obj = load_conf()
     source = path + "/" + folder
     files = os.listdir(source)
@@ -75,12 +84,27 @@ def convert_to_dng(path, folder):
                 time.sleep(2)
 
 def get_file_extension(file):
+    """
+    Parameters:
+    file: any file with an extension
+
+    this function will return the file extension for any image that is supplied to it
+    """
+
     temp = file.split(".")
     extension = temp[len(temp) - 1]
     file_name = temp[0]
     return file_name, extension.lower()
 
 def get_capture_date_jpg(path,image):
+    """
+    Parameters:
+    path: full path of the image
+    image: just the image name
+
+    this function is used to get the capturedate of .jpg image
+    """
+
     img = Image.open(path+"/"+image)
 
     raw_date = img.getexif()[306]
@@ -104,8 +128,53 @@ def sort_remaining_images():
             file.close()
     # TODO: in this function also check the folders if there are the same number of dngs as cr3s 
 
+def get_or_create_folder(path,image,date):
+    """
+    Parameters: 
+    path: full path of the image
+    image: just the image name
+    date: date that will be used as the foldername
+
+    This function will either move the image into the corresponding dates folder 
+    or create the folder and move the image into the folder afterwards
+    """
+
+    if os.path.exists(path + "/" + date):
+        shutil.move(path + "/" + image, path + "/" + date + "/" + image)
+    else:
+        os.mkdir(path + "/" + date)
+        shutil.move(path + "/" + image, path + "/" + date + "/" + image)
+    new_path = path + "/" + date + "/"
+    return new_path
+
+
+def process_recieved_ftp_image(image,path):
+    """
+    Parameters:
+    image: just the image name
+    path: full path of the image
+
+    this function gets called by the ftp server 
+    and will sort the newly uploaded images as well as convert them
+    """
+    with lock:
+        try:
+            date = ""
+            extension = get_file_extension(image)
+            if extension == "cr3":
+                date = get_capture_date(path, image)
+            elif extension == "jpg":
+                date = get_capture_date_jpg(path, image)
+            print("date:" + date)
+            new_path = get_or_create_folder(path,image,date)
+            convert_single_image(new_path, image)
+
+        except Exception as ex:
+            log.Error("process_recieved_ftp_image reported: %s"%ex)
+
+
+
 def sort_new_images(file): # TODO alter the function to recieve a path and a image name to only execute when a file got recieved and was being transferred properly
-    #TODO: might be good to seperate the function into a part that is being executed with a backgroundScheduler every day at X o'clock and the second part that will be executed by the periodic function as well as the ftp server
     with lock:
         try:      
             images_to_convert = []
@@ -142,9 +211,7 @@ def sort_new_images(file): # TODO alter the function to recieve a path and a ima
                 # convert the whole folder from cr3 to dng
                 convert_to_dng(path, folder)
         except Exception as ex:
-            with open(path + "log.txt", "w+") as file:
-                file.write(str(ex))
-                file.close()
+                log.Error("sort_new_images reported: %s"%ex)
 
 
 def update_machine():
