@@ -4,38 +4,48 @@ from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import ThreadedFTPServer
 
-import functions
+from functions import get_file_extension, allowed_image_types, process_recieved_ftp_image
 from config_helper import load_conf
 import logging
-from logger import logger,http_logger
+from logger import logger
 
 log = logger(logging.INFO, "ftp")
 
 
 class ftphandler(FTPHandler):
-    def on_file_recieved(self,file):
+    def on_file_received(self, file):
+        #the parameter file represents the full file path here
+
         #os.chmod(file,0o555) # change file permissions
 
-        file_extension = functions.get_file_extension(file)
+        print("here" + file)
+        file_name = file.split("/")[-1]
+        print(file_name)
+        file_name, file_extension = get_file_extension(file_name)
 
         if self.username == "camera":
-            if file_extension in functions.allowed_image_types:
+            if file_extension in allowed_image_types:
                 # TODO could try to execute the sort_new_images function, possibility is that there will be images that drop under the table bc of the images being transferred faster than they are converted
-                functions.sort_new_images(file)
+                process_recieved_ftp_image(file_name+"."+file_extension.upper(),file.replace("/"+file_name+file_extension,""))
                 print("allowed file")
-                log.info("%s uploaded file %s"%(self.username,file))
+                log.info("%s uploaded file %s"%(self.username, file))
             else:
                 os.remove(file)
-                self.response("550 File %s is not allowed to be uploaded as user: %s"%( file, self.username))
-                log.warning("user %s tried to upload an illegal file of type %s"% (self.username, file_extension))
+                log.warning("user %s tried to upload an illegal file of type %s"%(self.username, file_extension))
+        log.info("%s uploaded file %s"%(self.username, file))    
+    def on_incomplete_file_sent(self,file):
 
-    def on_incomplete_file(self,file):
-        print(file," incomplete")
-        log.warning("file %s was not uploaded completely"%file) 
+        log.warning("file %s was not uploaded completely"%file)
+
+    def on_connect(self):
+        print("connected" + self.remote_ip)
+
+    def on_login(self,username):
+        print("user %s logged in"%username)
 
 def init_ftp_server():
-    print("init")
-    #log.INFO("started ftp server")
+    print(" * Starting FTP Server")
+    log.info("started ftp server")
     config_obj = load_conf()
     ftp_path = config_obj["folders"]["ftp_path"]
 
