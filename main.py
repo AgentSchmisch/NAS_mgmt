@@ -7,6 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from functions import (sort_remaining_images,
                        update_system_status,
                        update_machine,
+                       check_for_unconverted_folders
                        )
 
 import multitasking
@@ -25,24 +26,6 @@ def start_flask():
     @app.get("/ping")
     def pingpong():
         return "pong"
-
-    # DEPRECATED FUNCTION
-    def post_cpu_load():
-        cpu_load = functions.get_CPU_usage()
-
-        json = {"test": cpu_load}
-        
-        re = requests.post("http://localhost:1880/api/cpuload", json)
-        return re.text
-
-    # DEPRECATED FUNCTION
-    def post_drive_space():
-        drive_space = functions.get_disk_space()
-
-        json = {"test": drive_space}
-        
-        re = requests.post("http://localhost:1880/api/drivespace", json)
-        return re.text
 
     # function to shutdown the machine
     @app.route("/api/v1/shutdown", methods=["POST"])
@@ -79,10 +62,10 @@ def start_flask():
 
     app.run(host="0.0.0.0")
 
-
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
     scheduler.add_job(sort_remaining_images, "cron", day_of_week= 'mon-sun', hour = 2)
+    scheduler.add_job(check_for_unconverted_folders,'interval', minutes = 5)
     scheduler.add_job(cleanup_old_logs, "cron", day_of_week= 'mon-sun', hour = 0)
     #scheduler.add_job(sort_new_images, 'interval', seconds=10)
     scheduler.add_job(update_machine, 'interval', days=118)
