@@ -18,7 +18,6 @@ class HTTPLogHandler(logging.Handler):
         self.url = url
 
     def emit(self, record):
-        print("sending log")
         log_entry = self.format(record)
         payload = {'log_entry': log_entry}
 
