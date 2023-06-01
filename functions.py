@@ -214,6 +214,55 @@ def sort_new_images(file): # TODO alter the function to recieve a path and a ima
                 log.Error("sort_new_images reported: %s"%ex)
 
 
+def check_dng_cr3_images(folder):
+    """
+    Parameters:
+    folder: the folder that the images are stored in
+
+    this function will check if there are a equal amount of cr3 images as well as dng images in the folder
+
+    Returns true if the amount is equal
+    Returns false if the amount isn't equal
+    """
+    num_cr3 = 0
+    num_dng = 0
+
+    images = filter(os.path.isdir, os.listdir(os.getcwd()))
+    for image in images:
+        extension = get_file_extension(image)
+
+        if extension == "cr3":
+            num_cr3 += 1
+        
+        elif extension == "dng":
+            num_dng += 1
+        else:
+            continue
+    if num_cr3 == num_dng:
+        return True
+    else:
+        return False
+
+
+def check_for_unconverted_folders():
+    """
+    Parameters:
+    none
+
+    this function will check if there are images that need to be converted in any folder
+    """
+
+    photo_folder = load_conf()["folders"]["ftp_path"] 
+
+    folders = os.listdir(photo_folder)
+
+    for folder in folders:
+        if check_dng_cr3_images(folder):
+            continue
+        else:
+            convert_to_dng(photo_folder, folder)
+
+
 def update_machine():
     proc = subprocess.Popen("apt update")
     while proc.poll() is None:
