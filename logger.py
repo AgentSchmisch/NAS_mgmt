@@ -18,6 +18,7 @@ class HTTPLogHandler(logging.Handler):
         self.url = url
 
     def emit(self, record):
+        print("sending log")
         log_entry = self.format(record)
         payload = {'log_entry': log_entry}
 
@@ -35,17 +36,28 @@ def logger(level,name):
     log_url = config_obj["addresses"]["logs"]
 
     filename = log_folder + "log_"+ str(datetime.now().date()).replace("-", "_")
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
+    # Create logger and set level
+    logger = logging.getLogger('name')
+    logger.setLevel(logging.INFO)
 
-    http_logger = HTTPLogHandler(log_url)
-    http_logger.setLevel(level)
+    # Create HTTPLogHandler and set level
+    http_handler = HTTPLogHandler(log_url)
+    http_handler.setLevel(level)
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    http_logger.setFormatter(formatter)
+    # Create FileHandler and set level
+    file_handler = logging.FileHandler(filename)
+    file_handler.setLevel(level)
 
-    logging.basicConfig(filename=filename, encoding='utf-8', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # Create formatter
+    formatter = logging.Formatter('%(asctime)s - '+ name +' - %(levelname)s - %(message)s')
 
+    # Set formatter for handlers
+    http_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+
+    # Add handlers to the logger
+    logger.addHandler(http_handler)
+    logger.addHandler(file_handler)
     return logger
 
 
