@@ -79,7 +79,7 @@ def convert_to_dng(path, folder):
             continue
         # ...if not convert it
         else:
-            proc = subprocess.Popen(["dnglab convert", source + "/" + file, source + "/" + file.replace("CR3", "dng")])
+            proc = subprocess.Popen(["dnglab","convert", source + "/" + file, source + "/" + file.replace("CR3", "dng")])
             while proc.poll() is None:
                 time.sleep(2)
 
@@ -174,7 +174,7 @@ def process_recieved_ftp_image(image,path):
 
 
 
-def sort_new_images(file): # TODO alter the function to recieve a path and a image name to only execute when a file got recieved and was being transferred properly
+def sort_new_images(file): # DEPRECATED
     with lock:
         try:      
             images_to_convert = []
@@ -226,14 +226,12 @@ def check_dng_cr3_images(folder):
     """
     num_cr3 = 0
     num_dng = 0
-
-    images = filter(os.path.isdir, os.listdir(os.getcwd()))
+    
+    images = os.listdir(folder)
     for image in images:
-        extension = get_file_extension(image)
-
+        file_name, extension = get_file_extension(image)
         if extension == "cr3":
             num_cr3 += 1
-        
         elif extension == "dng":
             num_dng += 1
         else:
@@ -251,17 +249,21 @@ def check_for_unconverted_folders():
 
     this function will check if there are images that need to be converted in any folder
     """
-
+    log.info("started checking for unconverted images")
     photo_folder = load_conf()["folders"]["ftp_path"] 
-
-    folders = os.listdir(photo_folder)
-
+    folders = []
+    all_elements = os.listdir(photo_folder)
+    for element in all_elements:
+        if os.path.isdir(photo_folder+element):
+            folders.append(photo_folder+element)
+        else:
+            continue
     for folder in folders:
+        print(folder)
         if check_dng_cr3_images(folder):
             continue
         else:
-            convert_to_dng(photo_folder, folder)
-
+            convert_to_dng(photo_folder, folder.replace(photo_folder,""))
 
 def update_machine():
     proc = subprocess.Popen("apt update")
