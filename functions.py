@@ -160,13 +160,7 @@ def get_or_create_folder(path,image,date):
     Return Value:
     new path of the current image
     """
-    path = path.replace(image,"") 
-    print("---------------------")
-    print("path: "+path)
-    print("image: "+image)
-    print("date: " + date)
-    print("---------------------")
-    
+    path = path.replace(image,"")    
     if os.path.exists(path + "/" + date):
         shutil.move(path + "/" + image, path + "/" + date + "/" + image)
         new_path = path + date + "/"
@@ -195,12 +189,10 @@ def process_recieved_ftp_image(image,path):
         try:
             date = ""
             file_name,extension = get_file_extension(image)
-            print("extension: "+extension)
             if extension == "cr3":
                 date = get_capture_date(path, image)
             elif extension == "jpg":
                 date = get_capture_date_jpg(path, image)
-            print("date:" + date)
             new_path = get_or_create_folder(path,image,date)
             convert_single_image(new_path, image)
 
@@ -295,7 +287,6 @@ def check_for_unconverted_folders():
         else:
             continue
     for folder in folders:
-        print(folder)
         if check_dng_cr3_images(folder):
             continue
         else:
