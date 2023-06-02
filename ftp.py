@@ -8,9 +8,23 @@ from functions import get_file_extension, allowed_image_types, process_recieved_
 from config_helper import load_conf
 import logging
 from logger import logger
+from hashlib import md5
+import re
+
+regex = r"/[0-9a-f]{64}/i"
 
 log = logger(logging.INFO, "ftp")
 
+class MD5Authorizer(DummyAuthorizer):
+    def validate_authentication(self,username,password,handler):
+        if sys.version_info>=(3,0):
+            password=md5(password.encode("latin1"))
+        hash = md5(password).hexdigest()
+        try:
+            if self.user_table[username]['pwd'] != hash:
+                raise KeyError
+        except KeyError:
+            raise AuthenticationFailed
 
 class ftphandler(FTPHandler):
     def on_file_received(self, file):
@@ -18,16 +32,12 @@ class ftphandler(FTPHandler):
 
         #os.chmod(file,0o555) # change file permissions
 
-        print("here" + file)
         file_name = file.split("/")[-1]
-        print(file_name)
         file_name, file_extension = get_file_extension(file_name)
 
         if self.username == "camera":
             if file_extension in allowed_image_types:
-                # TODO could try to execute the sort_new_images function, possibility is that there will be images that drop under the table bc of the images being transferred faster than they are converted
                 process_recieved_ftp_image(file_name+"."+file_extension.upper(),file.replace("/"+file_name+file_extension,""))
-                print("allowed file")
                 log.info("%s uploaded file %s"%(self.username, file))
             else:
                 os.remove(file)
@@ -50,10 +60,15 @@ def init_ftp_server():
     ftp_path = config_obj["folders"]["ftp_path"]
 
     authorizer = DummyAuthorizer()
+
+    # TODO: check if current password is already hashed if so, use this one for add_user..is the password not a hash, digest it and save it to the config file
+
     for user in config_obj["ftp_users"]:
      authorizer.add_user(user["ftp_username"], user["ftp_username"], ftp_path, perm="elradfmwMT")
     handler = ftphandler
     handler.authorizer = authorizer
+
+
     try:
         # Create the FTP server
         server = ThreadedFTPServer(("0.0.0.0", 21), handler)

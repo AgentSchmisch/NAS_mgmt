@@ -18,7 +18,7 @@ from logger import logger
 lock = Lock()
 # TODO: complete logging in this script
 # TODO: check wheter there is a transaction to the ftp folder going on not to interrupt any transfer and get a loss of data
-# TODO: skip failing images in the folder
+
 
 log = logger(logging.DEBUG, "functions")
 
@@ -41,9 +41,9 @@ def get_CPU_usage():
 
 
 def get_capture_date(path, image):
+    parent_folder = path.replace(image,"")
     expr = r'\d+'
-    print(image)
-    cmd = "python3 get_capture_dates.py -p " + path + " -i " + image
+    cmd = "python3 get_capture_dates.py -p " + parent_folder + " -i " + image
     raw_cmd_out = os.popen(cmd).read()
     time.sleep(3)
     print("raw" + raw_cmd_out)
@@ -54,13 +54,26 @@ def get_capture_date(path, image):
 
 
 def convert_single_image(path,image):
+    """
+    Parameters
+    path: full path of the parent folder
+    image: image to be converted
+
+    this function converts a single image from .cr3 to .dng
+
+    Return Value:
+    True on success
+    False on Error
+    """
+    print("convert:" + path)
     try:
-        proc = subprocess.Popen(["dnglab convert",path])
+        proc = subprocess.Popen(["dnglab","convert",path+image, path+image.replace("CR3","dng")])
         while proc.poll() is None:
             time.sleep(2)
-        return true
+        return True
     except:
-        return false
+        log.error("image %s could not be converted"%path+image)
+        return False
 
 def convert_to_dng(path, folder):
     """
@@ -89,6 +102,9 @@ def get_file_extension(file):
     file: any file with an extension
 
     this function will return the file extension for any image that is supplied to it
+
+    Return Value:
+    Tuple consisting of the file name and the lowercase extension
     """
 
     temp = file.split(".")
@@ -103,6 +119,9 @@ def get_capture_date_jpg(path,image):
     image: just the image name
 
     this function is used to get the capturedate of .jpg image
+
+    Return Value:
+    Capture date of the image
     """
 
     img = Image.open(path+"/"+image)
@@ -116,6 +135,7 @@ def get_capture_date_jpg(path,image):
     return capture_date
 
 def sort_remaining_images():
+    #TODO: rename to sort_orphaned_images
     #this function will be executed by a BackgroundScheduler every day at 2am to clean up all the images that might have gotten overlooked by the execution after the transfer
     config_obj = load_conf()
     pathx = config_obj["folders"]
@@ -126,7 +146,6 @@ def sort_remaining_images():
        with open(path + "log.txt", "w+") as file:
             file.write(str(ex))
             file.close()
-    # TODO: in this function also check the folders if there are the same number of dngs as cr3s 
 
 def get_or_create_folder(path,image,date):
     """
@@ -137,14 +156,26 @@ def get_or_create_folder(path,image,date):
 
     This function will either move the image into the corresponding dates folder 
     or create the folder and move the image into the folder afterwards
-    """
 
+    Return Value:
+    new path of the current image
+    """
+    path = path.replace(image,"") 
+    print("---------------------")
+    print("path: "+path)
+    print("image: "+image)
+    print("date: " + date)
+    print("---------------------")
+    
     if os.path.exists(path + "/" + date):
         shutil.move(path + "/" + image, path + "/" + date + "/" + image)
+        new_path = path + date + "/"
+
     else:
         os.mkdir(path + "/" + date)
         shutil.move(path + "/" + image, path + "/" + date + "/" + image)
-    new_path = path + "/" + date + "/"
+        new_path = path + date + "/"
+
     return new_path
 
 
@@ -156,11 +187,15 @@ def process_recieved_ftp_image(image,path):
 
     this function gets called by the ftp server 
     and will sort the newly uploaded images as well as convert them
+
+    Return Value:
+    None
     """
     with lock:
         try:
             date = ""
-            extension = get_file_extension(image)
+            file_name,extension = get_file_extension(image)
+            print("extension: "+extension)
             if extension == "cr3":
                 date = get_capture_date(path, image)
             elif extension == "jpg":
@@ -170,7 +205,7 @@ def process_recieved_ftp_image(image,path):
             convert_single_image(new_path, image)
 
         except Exception as ex:
-            log.Error("process_recieved_ftp_image reported: %s"%ex)
+            log.error("process_recieved_ftp_image reported: %s"%ex)
 
 
 
@@ -211,7 +246,7 @@ def sort_new_images(file): # DEPRECATED
                 # convert the whole folder from cr3 to dng
                 convert_to_dng(path, folder)
         except Exception as ex:
-                log.Error("sort_new_images reported: %s"%ex)
+                log.error("sort_new_images reported: %s"%ex)
 
 
 def check_dng_cr3_images(folder):
@@ -221,8 +256,9 @@ def check_dng_cr3_images(folder):
 
     this function will check if there are a equal amount of cr3 images as well as dng images in the folder
 
-    Returns true if the amount is equal
-    Returns false if the amount isn't equal
+    Return Value:
+    True if the amount is equal
+    False if the amount isn't equal
     """
     num_cr3 = 0
     num_dng = 0
@@ -266,13 +302,17 @@ def check_for_unconverted_folders():
             convert_to_dng(photo_folder, folder.replace(photo_folder,""))
 
 def update_machine():
-    proc = subprocess.Popen("apt update")
-    while proc.poll() is None:
-        time.sleep(2)
+    # this function gets called by a BackgroundScheduler and updates the system
+    try:
+        proc = subprocess.Popen("apt update")
+        while proc.poll() is None:
+            time.sleep(2)
 
-    proc = subprocess.Popen("apt upgrade")
-    while proc.poll() is None:
-        time.sleep(2)
+        proc = subprocess.Popen("apt upgrade")
+        while proc.poll() is None:
+            time.sleep(2)
+    except Exception as ex:
+        log.error("update_machine reported: "+ex)
 
 
 def update_system_status(): # function to send the system status consisting of cpu load and storage use to the node red api
