@@ -133,3 +133,4 @@ dmypy.json
 .vscode
 
 config.json
+tests
