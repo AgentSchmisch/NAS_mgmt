@@ -17,16 +17,21 @@ from logger import logger
 
 lock = Lock()
 # TODO: complete logging in this script
-# TODO: check wheter there is a transaction to the ftp folder going on not to interrupt any transfer and get a loss of data
-
 
 log = logger(logging.DEBUG, "functions")
 
 allowed_image_types = ["jpg", "jpeg", "cr3", "cr2", "dng","mp4"]
 
-def get_disk_space():
+def get_disk_space(drives):
+    """
+    Parameters:
+    drives: array with mounting points of the drives
 
-    drives = ["/","/mnt/array"]
+    this function will get a array of drivespaces from the array of drives in the parameter
+
+    Return Values:
+    array with free drive spaces in GB
+    """
     space = []
 
     for drive in drives:
@@ -36,19 +41,36 @@ def get_disk_space():
 
 # get cpu usage and frequency per core
 def get_CPU_usage():
+    """
+    Parameters:
+    None
+
+    this function will get the cpu usage of the machine in percent per cpu core
+
+    Return Values:
+    array of percentage of cpu usage
+    """
     usage = psutil.cpu_percent(interval=1, percpu=True)
     return usage
 
 
 def get_capture_date(path, image):
+    """
+    Parameters:
+    path: full image path of the cr3
+    image: just the image's name
+
+    this function will get the capture date of a certain image of type cr3
+
+    Return Values:
+    capture date in the format YYYY_MM_DD
+    """
     parent_folder = path.replace(image,"")
     expr = r'\d+'
     cmd = "python3 get_capture_dates.py -p " + parent_folder + " -i " + image
     raw_cmd_out = os.popen(cmd).read()
     time.sleep(3)
-    print("raw" + raw_cmd_out)
     dates = re.findall(expr, raw_cmd_out)
-    print(dates)
     date = dates[0] + "_" + dates[1] + "_" + dates[2]
     return date
 
@@ -65,7 +87,7 @@ def convert_single_image(path,image):
     True on success
     False on Error
     """
-    print("convert:" + path)
+
     try:
         proc = subprocess.Popen(["dnglab","convert",path+image, path+image.replace("CR3","dng")])
         while proc.poll() is None:
@@ -134,18 +156,24 @@ def get_capture_date_jpg(path,image):
     capture_date = raw_date_array[0].replace(":", "_")
     return capture_date
 
-def sort_remaining_images():
-    #TODO: rename to sort_orphaned_images
-    #this function will be executed by a BackgroundScheduler every day at 2am to clean up all the images that might have gotten overlooked by the execution after the transfer
+def sort_orphaned_images():
+    """
+    Parameters:
+    None
+    
+    this function will be executed by a BackgroundScheduler every day at 2am to clean up all the images that might have gotten overlooked by the execution after the transfer
+
+    Return Value:
+    None
+    """
     config_obj = load_conf()
     pathx = config_obj["folders"]
     path = pathx["ftp_path"]
     try:
       files = os.listdir(path)
+
     except Exception as ex:
-       with open(path + "log.txt", "w+") as file:
-            file.write(str(ex))
-            file.close()
+            log.error("sort_orphaned_images reported " + ex)
 
 def get_or_create_folder(path,image,date):
     """
@@ -307,7 +335,8 @@ def update_machine():
 
 
 def update_system_status(): # function to send the system status consisting of cpu load and storage use to the node red api
-    storage = get_disk_space()
+    drives = ["/","/mnt/array"]
+    storage = get_disk_space(drives)
     cpu_load = get_CPU_usage()
 
     status = {
