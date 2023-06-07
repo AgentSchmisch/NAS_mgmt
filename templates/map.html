@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+        <link rel="stylesheet" href="static/styles.css">
+        <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet"/>
+    </head>
+    <style>
+        
+    </style>
+
+    <body>
+        <h1>GPS data setter</h1>
+        <div id="osm-map">you should see the map here...</div>
+
+        Coordinates: <input type="text" id="coordinates" value="" readonly>
+
+        <table>
+        <th> Folder Name</th>
+        {%for folder in folders_to_set_gps_data %}
+        
+           <tr> <td><input type="radio" name="folder" value = {{folder}}>{{ folder }}</td></tr>
+
+        {% endfor %}
+        </table>
+        <button onclick="submitToAPI();">Submit</button> 
+    </body>
+</html>
+
+<script>// Where you want to render the map.
+    var element = document.getElementById('osm-map');
+    
+    // Height has to be set. You can do this in CSS too.
+    element.style = 'height:31em; width:31em;';
+    
+    // Create Leaflet map on map element.
+    var map = L.map(element);
+    
+    // Add OSM tile layer to the Leaflet map.
+    L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Target's GPS coordinates.
+    var target = L.latLng('48.207874', '16.369436'); //48.207874, 16.369436 Vienna inner City
+    
+    // Set map's center to target with zoom 14.
+    map.setView(target, 14);
+
+    var marker;
+
+    function onMapClick(e) {
+
+        if (map.hasLayer(marker)) {
+             map.removeLayer(marker);
+             marker = new L.Marker(e.latlng);
+             map.addLayer(marker);
+            }
+        else{
+        marker = new L.Marker(e.latlng);
+        map.addLayer(marker);
+    }
+    };
+
+    map.on('click', onMapClick);
+
+    function submitToAPI(){
+        var coordinates = marker._latlng.toString().replace("LatLng(","").replace(")","");
+        document.getElementById("coordinates").value = coordinates;
+
+       selected_folder =  document.querySelector('input[name="folder"]:checked').value;
+       
+       const response = fetch("https://dev.florianschmid.at/proxy/5000/coordinates", {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                        },
+                body: `{
+                "folder":"`+selected_folder+`",
+                "coordinates": "`+coordinates+`"
+                }`,
+                });
+        if (response.status == 200){
+            console.log("success")
+        }
+    }
+
+</script>
