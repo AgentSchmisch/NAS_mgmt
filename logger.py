@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import config_helper
 import requests
 import os
@@ -68,8 +68,9 @@ def cleanup_old_logs():
     log_files = os.listdir(log_folder)
     for log_file in log_files:
         log_date_raw = log_file.split("_")
-        log_date = date(log_date_raw[1], log_date_raw[2], log_date_raw[3])
-        if datetime.now().date - timedelta(days=7) > log_date:
+        log_date = datetime(int(log_date_raw[1]), int(log_date_raw[2]), int(log_date_raw[3]))
+        print(log_date)
+        if datetime.today() - timedelta(days=7) > log_date:
             os.remove(log_folder + log_file)
 
     log = logger(logging.DEBUG,"logs")
