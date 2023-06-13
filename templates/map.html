@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
     <head>
+        <title>GPS data setter</title>
         <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
         <link rel="stylesheet" href="static/styles.css">
-        <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet"/>
+        <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet">
     </head>
-    <style>
-        
-    </style>
 
     <body>
         <h1>GPS data setter</h1>
@@ -16,14 +14,17 @@
         Coordinates: <input type="text" id="coordinates" value="" readonly>
 
         <table>
-        <th> Folder Name</th>
-        {%for folder in folders_to_set_gps_data %}
-        
-           <tr> <td><input type="radio" name="folder" value = {{folder}}>{{ folder }}</td></tr>
+            <tbody>
+                <tr>
+                    <th scope="col"> Folder Name</th>
+                </tr>
+                {%for folder in folders_to_set_gps_data %}
+                <tr> <td><input type="radio" name="folder" value="{{folder}}">{{ folder }}</td></tr>
 
-        {% endfor %}
+                {% endfor %}
+            </tbody>
         </table>
-        <button onclick="submitToAPI();">Submit</button> 
+        <button type="button" onclick="submitToAPI();">Submit</button>
     </body>
 </html>
 
