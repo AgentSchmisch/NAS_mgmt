@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, date
 import config_helper
 import requests
 import os
